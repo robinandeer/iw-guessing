@@ -50,7 +50,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
     guess: "",
     score: 0,
     round: 1,
-    totalRounds: 5,
+    totalRounds: 3,
     totalScore: 0,
   })
 
