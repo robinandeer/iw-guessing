@@ -38,15 +38,15 @@ interface GameState {
 
 export default function SimulationGuessingGame() {
   const [gameState, setGameState] = useState<GameState>({
-    phase: "result",
-    originalImage: "https://xbswhctnjf.ufs.sh/f/8Nxl3xXvYosk5HsQgoA4MJNhBwg2TmzPeZ0CnESDX3fojFVR",
-    transformedImage: "https://xbswhctnjf.ufs.sh/f/8Nxl3xXvYoskXyozhoPElaOTFIYyndjPMZuJCWARL2phKrsE",
-    currentTransformation: "transform the image to a 3D model that replaces the parts of the image that are not human",
-    guess: "transform the image to a 3D model",
-    score: 70,
+    phase: 'upload',
+    originalImage: null,
+    transformedImage: null,
+    currentTransformation: null,
+    guess: '',
+    score: 0,
     round: 1,
     totalRounds: 5,
-    totalScore: 70,
+    totalScore: 0,
   })
 
   const [processingProgress, setProcessingProgress] = useState(0)
@@ -252,7 +252,7 @@ export default function SimulationGuessingGame() {
 
       {/* Main Content - Full Screen Modal Style */}
       <div className="pt-20 min-h-screen flex items-center justify-center p-4">
-        <div className="w-full max-w-7xl h-[calc(100vh-6rem)]">
+        <div className="w-full max-w-7xl h-[calc(100vh-8rem)]">
           {/* Upload Phase */}
           {gameState.phase === "upload" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-4 duration-500 h-full">
@@ -297,7 +297,7 @@ export default function SimulationGuessingGame() {
                             isDragActive ? "text-teal-200" : "text-teal-200"
                           }`,
                         button:
-                          "bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ut-ready:bg-teal-600 ut-uploading:cursor-not-allowed ut-uploading:bg-teal-400",
+                          "w-60 bg-teal-600 hover:bg-teal-700 text-white font-bold py-4 px-8 rounded-xl text-lg transition-all duration-300 hover:scale-110 hover:shadow-xl ut-ready:bg-teal-600 ut-uploading:cursor-not-allowed ut-uploading:bg-teal-400",
                       }}
                       content={{
                         uploadIcon({ ready, isUploading }) {
