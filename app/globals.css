@@ -287,6 +287,21 @@
   }
 }
 
+/* Extra small screen breakpoint */
+@media (min-width: 480px) {
+  .xs\:block {
+    display: block;
+  }
+
+  .xs\:flex {
+    display: flex;
+  }
+
+  .xs\:hidden {
+    display: none;
+  }
+}
+
 /* Enhanced responsive breakpoints */
 @media (max-width: 640px) {
   .content-container {
@@ -310,10 +325,36 @@
   }
 }
 
+/* Enhanced mobile optimizations */
 @media (max-width: 480px) {
   .content-container {
-    max-height: calc(100vh - 3rem);
+    max-height: calc(100vh - 3.5rem);
     padding: 0.25rem;
+  }
+
+  /* Ensure buttons are always accessible */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Reduce text sizes for better fit */
+  .text-4xl {
+    font-size: 1.875rem;
+  }
+
+  .text-6xl {
+    font-size: 2.5rem;
+  }
+
+  /* Ensure content doesn't get cut off */
+  .pb-12 {
+    padding-bottom: 1rem;
+  }
+
+  .p-12 {
+    padding: 1rem;
   }
 
   /* Further simplify on very small screens */
@@ -327,10 +368,41 @@
   }
 }
 
-/* Landscape mobile optimization */
+/* Extra small screens - ensure critical elements are accessible */
+@media (max-width: 360px) {
+  .header-compact {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .header-compact h1 {
+    font-size: 1rem;
+  }
+
+  .header-compact .badge {
+    font-size: 0.65rem;
+  }
+
+  /* Ensure result headings fit */
+  .text-2xl {
+    font-size: 1.25rem;
+  }
+
+  .text-4xl {
+    font-size: 1.5rem;
+  }
+
+  /* Guarantee button accessibility */
+  .touch-target {
+    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+  }
+}
+
+/* Landscape mobile - optimize vertical space */
 @media (max-height: 500px) and (orientation: landscape) {
   .content-container {
-    max-height: calc(100vh - 2rem);
+    max-height: calc(100vh - 2.5rem);
   }
 
   .header-compact {
@@ -338,12 +410,17 @@
     padding-bottom: 0.25rem;
   }
 
-  /* Reduce vertical spacing in landscape */
+  /* Compact spacing in landscape */
   .space-y-8 > * + * {
-    margin-top: 1rem;
+    margin-top: 0.75rem;
   }
 
   .space-y-12 > * + * {
-    margin-top: 1.5rem;
+    margin-top: 1rem;
+  }
+
+  /* Ensure buttons remain accessible in landscape */
+  .touch-target {
+    margin-bottom: 0.5rem;
   }
 }

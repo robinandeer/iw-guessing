@@ -318,48 +318,72 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
       </div>
 
       {/* Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-purple-500/20 header-compact">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
+      {/* Header - Improved mobile layout with reduced padding */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-purple-500/20">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-3">
+          {/* Main header row */}
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-4">
+            {/* Left side with back button and title */}
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={onBackToMenu}
-                className="text-purple-300 hover:text-white hover:bg-purple-500/20"
+                className="text-purple-300 hover:text-white hover:bg-purple-500/20 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 flex-shrink-0"
               >
                 <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
-              <div className="relative p-2 sm:p-3 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl sm:rounded-2xl shadow-lg shadow-purple-500/30">
-                <Eye className="text-white h-4 w-4 sm:h-6 sm:w-6" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                  Reverse Detective
-                </h1>
-                <p className="text-xs text-purple-300/80 font-medium">Identify the person</p>
+
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="relative p-1.5 sm:p-2 md:p-3 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg shadow-purple-500/30 flex-shrink-0">
+                  <Eye className="text-white h-3.5 w-3.5 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-2.5 sm:h-2.5 md:w-3 md:h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
+                </div>
+
+                <div className="min-w-0">
+                  {" "}
+                  {/* Prevent text overflow */}
+                  <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent truncate">
+                    Reverse Detective
+                  </h1>
+                  <p className="text-xs text-purple-300/80 font-medium hidden xs:block">Identify the person</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-center gap-2 sm:gap-6">
+
+            {/* Right side with controls */}
+            <div className="flex items-center gap-1.5 sm:gap-2 md:gap-4">
               <SoundToggle />
-              <div className="flex items-center gap-2 sm:gap-3 bg-slate-800/60 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full border border-purple-500/20">
-                <Star className="text-amber-400 h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
-                <span className="text-white font-bold text-base sm:text-lg">{gameState.totalScore}</span>
-                <span className="text-purple-300 text-xs sm:text-sm">pts</span>
+
+              {/* Score display - simplified on mobile */}
+              <div className="hidden xs:flex items-center gap-1 sm:gap-2 md:gap-3 bg-slate-800/60 backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2 rounded-full border border-purple-500/20">
+                <Star className="text-amber-400 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 animate-pulse" />
+                <span className="text-white font-bold text-sm sm:text-base md:text-lg">{gameState.totalScore}</span>
+                <span className="text-purple-300 text-xs sm:text-xs md:text-sm">pts</span>
               </div>
+
+              {/* Mobile score - very compact */}
+              <div className="flex xs:hidden items-center gap-1 bg-slate-800/60 backdrop-blur-sm px-1.5 py-1 rounded-full border border-purple-500/20">
+                <Star className="text-amber-400 h-3 w-3 animate-pulse" />
+                <span className="text-white font-bold text-xs">{gameState.totalScore}</span>
+              </div>
+
+              {/* Round indicator */}
               <Badge
                 variant="outline"
-                className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium"
+                className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-1.5 sm:px-2 md:px-4 py-0.5 sm:py-1 md:py-1.5 text-xs sm:text-xs md:text-sm font-medium"
               >
-                Round {gameState.round}/{gameState.totalRounds}
+                <span className="hidden sm:inline">Round </span>
+                {gameState.round}/{gameState.totalRounds}
               </Badge>
             </div>
           </div>
-          <div className="mt-2 sm:mt-3 relative">
+
+          {/* Progress bar */}
+          <div className="mt-1.5 sm:mt-2 md:mt-3 relative">
             <Progress
               value={((gameState.round - 1) / gameState.totalRounds) * 100}
-              className="w-full h-1.5 sm:h-2 bg-slate-800/60"
+              className="w-full h-1 sm:h-1.5 md:h-2 bg-slate-800/60"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-full blur-sm"></div>
           </div>
@@ -367,7 +391,8 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
       </div>
 
       {/* Main Content */}
-      <div className="pt-24 min-h-[calc(100vh-6rem)] flex items-center justify-center p-4 sm:p-6">
+      {/* Main Content - Reduced padding for mobile */}
+      <div className="pt-16 sm:pt-20 md:pt-24 min-h-[calc(100vh-4rem)] sm:min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)] flex items-center justify-center p-2 sm:p-4 md:p-6">
         <div
           ref={contentContainerRef}
           className={`w-full max-w-6xl content-container ${isTransitioning ? "phase-transitioning" : ""}`}
@@ -476,25 +501,30 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
-                <CardContent className="relative z-10 flex-1 flex flex-col justify-center p-12 gap-8">
-                  {/* Score Display */}
-                  <div className="flex flex-col items-center justify-center mb-6">
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                      <Brain className="text-purple-400 h-10 w-10" />
-                      <h2 className="text-white text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
+                {/* CardContent - Reduced padding for mobile */}
+                <CardContent className="relative z-10 flex-1 flex flex-col justify-center p-4 sm:p-8 md:p-12 gap-4 sm:gap-6 md:gap-8">
+                  {/* Score Display - Reduced size for mobile */}
+                  <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
+                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
+                      <Brain className="text-purple-400 h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10" />
+                      <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent text-center">
                         Identity Revealed
                       </h2>
                     </div>
-                    <div className="flex items-center justify-center gap-4 mt-4 relative">
-                      <div className="absolute -inset-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
-                      <Star className="relative text-amber-400 h-12 w-12 animate-pulse" />
-                      <span className="relative text-white text-6xl font-bold">{gameState.score}</span>
-                      <span className="relative text-purple-300 text-3xl font-medium">/100</span>
+                    <div className="flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-4 relative">
+                      <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
+                      <Star className="relative text-amber-400 h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 animate-pulse" />
+                      <span className="relative text-white text-4xl sm:text-5xl md:text-6xl font-bold">
+                        {gameState.score}
+                      </span>
+                      <span className="relative text-purple-300 text-2xl sm:text-2xl md:text-3xl font-medium">
+                        /100
+                      </span>
                     </div>
                   </div>
 
-                  {/* Reveal Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 bg-slate-800/40 backdrop-blur-sm p-4 sm:p-8 rounded-2xl border border-purple-500/20 relative">
+                  {/* Reveal Section - Reduced padding for mobile */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 md:gap-8 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-6 md:p-8 rounded-2xl border border-purple-500/20 relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
 
                     {/* Images Comparison */}
@@ -577,23 +607,25 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     </div>
                   </div>
 
-                  {/* Next Round Button */}
-                  <Button
-                    onClick={nextRound}
-                    className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 text-white font-semibold py-5 text-xl rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 mt-6"
-                  >
-                    {gameState.round >= gameState.totalRounds ? (
-                      <>
-                        <RotateCcw className="mr-2 h-6 w-6" />
-                        New Investigation
-                      </>
-                    ) : (
-                      <>
-                        <Wand2 className="mr-2 h-6 w-6" />
-                        Next Case
-                      </>
-                    )}
-                  </Button>
+                  {/* Next Round Button - Improved mobile accessibility */}
+                  <div className="mt-4 sm:mt-6 pb-2 sm:pb-0">
+                    <Button
+                      onClick={nextRound}
+                      className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 text-white font-semibold py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 touch-target"
+                    >
+                      {gameState.round >= gameState.totalRounds ? (
+                        <>
+                          <RotateCcw className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                          New Investigation
+                        </>
+                      ) : (
+                        <>
+                          <Wand2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                          Next Case
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </CardContent>
               </Card>
             </div>

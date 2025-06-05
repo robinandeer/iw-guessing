@@ -27,9 +27,13 @@ export function SoundToggle() {
             variant="ghost"
             size="icon"
             onClick={toggleMute}
-            className="h-8 w-8 rounded-full bg-white/10 hover:bg-white/20 text-white"
+            className="h-7 w-7 sm:h-8 sm:w-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex-shrink-0"
           >
-            {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+            {muted ? (
+              <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            ) : (
+              <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+            )}
             <span className="sr-only">{muted ? "Unmute" : "Mute"} sounds</span>
           </Button>
         </TooltipTrigger>
