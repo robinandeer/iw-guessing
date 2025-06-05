@@ -1,4 +1,4 @@
-const GRADIO_API_URL_BASE = 'https://673bbc6c8e6c.ngrok.app';
+const GRADIO_API_URL_BASE = 'https://11824e588701.ngrok.app';
 const GRADIO_API_URL = `${GRADIO_API_URL_BASE}/gradio_api/call/process_inputs`;
 const GRADIO_API_URL_EVENT = `${GRADIO_API_URL_BASE}/gradio_api/call/process_inputs`;
 
