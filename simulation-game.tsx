@@ -286,10 +286,10 @@ export default function SimulationGuessingGame() {
                       <Moon className="h-12 w-12 text-purple-400 animate-pulse" />
                     </div>
                     <CardTitle className="text-white text-4xl font-bold mb-4 tracking-tight bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
-                      Begin the Transformation
+                      Upload Your Image
                     </CardTitle>
                     <CardDescription className="text-purple-300 text-xl font-medium">
-                      Upload your image and witness the magic unfold
+                      Let's transform your image into something new
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 flex items-center justify-center px-12 pb-16">
@@ -337,12 +337,12 @@ export default function SimulationGuessingGame() {
                             return <Upload className="h-16 w-16 text-purple-500 animate-pulse" />
                           },
                           label({ ready, isUploading }) {
-                            if (isUploading) return "Channeling energy..."
-                            if (ready) return "Drop your image into the void"
-                            return "Preparing the ritual..."
+                            if (isUploading) return "Processing..."
+                            if (ready) return "Drop your image here"
+                            return "Getting ready..."
                           },
                           allowedContent({ isUploading }) {
-                            if (isUploading) return "The transformation begins..."
+                            if (isUploading) return "Transforming your image..."
                             return "Up to 4MB • PNG, JPG, WEBP"
                           },
                         }}
@@ -379,7 +379,7 @@ export default function SimulationGuessingGame() {
                       <div className="flex items-center gap-4 mb-6">
                         <Sparkles className="text-purple-400 h-7 w-7 animate-pulse" />
                         <span className="text-white font-semibold text-xl">
-                          Weaving the spell... {Math.round(processingProgress)}%
+                          Working our magic... {Math.round(processingProgress)}%
                         </span>
                       </div>
                       <div className="w-full bg-slate-700/60 rounded-full h-3 overflow-hidden relative">
@@ -408,7 +408,7 @@ export default function SimulationGuessingGame() {
                     <div className="text-center flex flex-col items-center justify-center space-y-4">
                       <Label className="text-purple-300 font-semibold text-lg flex items-center gap-2">
                         <Moon className="h-5 w-5" />
-                        Before
+                        Original
                       </Label>
                       <div className="relative group cursor-pointer">
                         <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
@@ -423,7 +423,7 @@ export default function SimulationGuessingGame() {
                     <div className="text-center flex flex-col items-center justify-center space-y-4">
                       <Label className="text-purple-300 font-semibold text-lg flex items-center gap-2">
                         <Sparkles className="h-5 w-5" />
-                        After
+                        Transformed
                       </Label>
                       <div className="relative group cursor-pointer">
                         <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
@@ -443,11 +443,11 @@ export default function SimulationGuessingGame() {
                     <div className="relative z-10">
                       <h3 className="text-white text-2xl font-bold flex items-center justify-center gap-3 mb-6">
                         <Eye className="text-purple-400 h-7 w-7" />
-                        Unravel the Mystery
+                        Spot the Difference
                       </h3>
                       <Textarea
                         id="guess"
-                        placeholder="What sorcery has been cast upon this image?"
+                        placeholder="What changed in the image? Take a picture-perfect guess!"
                         value={gameState.guess}
                         onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
                         className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
@@ -459,7 +459,7 @@ export default function SimulationGuessingGame() {
                         className="w-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-700 hover:via-violet-700 hover:to-indigo-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-4"
                       >
                         <Wand2 className="mr-2 h-5 w-5" />
-                        Reveal the Truth
+                        Submit Your Guess
                       </Button>
                     </div>
                   </div>
@@ -479,7 +479,7 @@ export default function SimulationGuessingGame() {
                     <div className="flex items-center justify-center gap-3 mb-4">
                       <Brain className="text-purple-400 h-10 w-10" />
                       <h2 className="text-white text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
-                        The Revelation
+                        Results
                       </h2>
                     </div>
                     <div className="flex items-center justify-center gap-4 mt-4 relative">
@@ -498,7 +498,7 @@ export default function SimulationGuessingGame() {
                       <div className="space-y-3">
                         <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2">
                           <Sparkles className="h-5 w-5" />
-                          The True Magic:
+                          Actual Transformation:
                         </h3>
                         <p className="text-white text-lg leading-relaxed bg-slate-900/40 p-4 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
                           {gameState.currentTransformation}
@@ -511,7 +511,7 @@ export default function SimulationGuessingGame() {
                       <div className="space-y-3">
                         <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2">
                           <Eye className="h-5 w-5" />
-                          Your Vision:
+                          Your Guess:
                         </h3>
                         <p className="text-purple-100 text-lg leading-relaxed italic bg-slate-900/40 p-4 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
                           "{gameState.guess}"
@@ -528,12 +528,12 @@ export default function SimulationGuessingGame() {
                     {gameState.round >= gameState.totalRounds ? (
                       <>
                         <RotateCcw className="mr-2 h-6 w-6" />
-                        Begin Anew
+                        Play Again
                       </>
                     ) : (
                       <>
                         <Wand2 className="mr-2 h-6 w-6" />
-                        Continue the Journey
+                        Next Round
                       </>
                     )}
                   </Button>
