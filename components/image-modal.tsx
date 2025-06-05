@@ -95,26 +95,26 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
         onClick={handleBackdropClick}
       />
 
-      {/* Modal Content */}
-      <div className="relative z-10 w-full h-full max-w-7xl max-h-screen p-4 sm:p-8 flex flex-col">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-4 bg-slate-900/60 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
-          <div className="flex items-center gap-3">
+      {/* Modal Content - responsive padding */}
+      <div className="relative z-10 w-full h-full max-w-7xl max-h-screen mobile-modal flex flex-col">
+        {/* Header - responsive sizing */}
+        <div className="flex items-center justify-between mb-2 sm:mb-4 bg-slate-900/60 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-purple-500/20">
+          <div className="flex items-center gap-2 sm:gap-3">
             {currentImage.title.includes("Original") ? (
-              <Eye className="h-6 w-6 text-purple-400" />
+              <Eye className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
             ) : (
-              <Sparkles className="h-6 w-6 text-purple-400" />
+              <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-purple-400" />
             )}
             <div>
-              <h2 className="text-white text-xl font-bold">{currentImage.title}</h2>
-              {currentImage.subtitle && <p className="text-purple-300 text-sm">{currentImage.subtitle}</p>}
+              <h2 className="text-white text-lg sm:text-xl font-bold">{currentImage.title}</h2>
+              {currentImage.subtitle && <p className="text-purple-300 text-xs sm:text-sm">{currentImage.subtitle}</p>}
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             {hasMultipleImages && (
-              <div className="flex items-center gap-1 bg-slate-800/60 rounded-lg px-3 py-1.5 border border-purple-500/20">
-                <span className="text-white text-sm font-medium">
+              <div className="flex items-center gap-1 bg-slate-800/60 rounded-lg px-2 sm:px-3 py-1 sm:py-1.5 border border-purple-500/20">
+                <span className="text-white text-xs sm:text-sm font-medium">
                   {currentIndex + 1} / {images.length}
                 </span>
               </div>
@@ -123,16 +123,16 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-xl"
+              className="text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-xl h-8 w-8 sm:h-10 sm:w-10 touch-target"
             >
-              <X className="h-6 w-6" />
+              <X className="h-4 w-4 sm:h-6 sm:w-6" />
             </Button>
           </div>
         </div>
 
-        {/* Image Container */}
-        <div className="flex-1 flex items-center justify-center relative">
-          {/* Navigation Buttons */}
+        {/* Image Container - responsive sizing */}
+        <div className="flex-1 flex items-center justify-center relative min-h-0">
+          {/* Navigation Buttons - responsive positioning */}
           {hasMultipleImages && (
             <>
               <Button
@@ -141,11 +141,11 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
                 onClick={handlePrevious}
                 disabled={currentIndex === 0}
                 className={cn(
-                  "absolute left-4 z-20 bg-slate-900/60 backdrop-blur-sm border border-purple-500/20 text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-xl h-12 w-12",
+                  "absolute left-2 sm:left-4 z-20 bg-slate-900/60 backdrop-blur-sm border border-purple-500/20 text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-xl h-10 w-10 sm:h-12 sm:w-12 touch-target",
                   currentIndex === 0 && "opacity-50 cursor-not-allowed",
                 )}
               >
-                <ChevronLeft className="h-6 w-6" />
+                <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
               </Button>
               <Button
                 variant="ghost"
@@ -153,27 +153,27 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
                 onClick={handleNext}
                 disabled={currentIndex === images.length - 1}
                 className={cn(
-                  "absolute right-4 z-20 bg-slate-900/60 backdrop-blur-sm border border-purple-500/20 text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-xl h-12 w-12",
+                  "absolute right-2 sm:right-4 z-20 bg-slate-900/60 backdrop-blur-sm border border-purple-500/20 text-purple-300 hover:text-white hover:bg-purple-500/20 rounded-xl h-10 w-10 sm:h-12 sm:w-12 touch-target",
                   currentIndex === images.length - 1 && "opacity-50 cursor-not-allowed",
                 )}
               >
-                <ChevronRight className="h-6 w-6" />
+                <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
               </Button>
             </>
           )}
 
-          {/* Image */}
-          <div className="relative max-w-full max-h-full flex items-center justify-center">
+          {/* Image - responsive sizing */}
+          <div className="relative w-full h-full flex items-center justify-center px-12 sm:px-16">
             {!imageLoaded && (
               <div className="absolute inset-0 flex items-center justify-center bg-slate-800/60 rounded-2xl border border-purple-500/20">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400"></div>
+                <div className="animate-spin rounded-full h-8 w-8 sm:h-12 sm:w-12 border-b-2 border-purple-400"></div>
               </div>
             )}
             <img
               src={currentImage.src || "/placeholder.svg"}
               alt={currentImage.alt}
               className={cn(
-                "max-w-full max-h-full object-contain rounded-2xl shadow-2xl border-2 border-purple-500/30 transition-all duration-500",
+                "max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-2xl border-2 border-purple-500/30 transition-all duration-500",
                 imageLoaded ? "opacity-100" : "opacity-0",
               )}
               onLoad={() => setImageLoaded(true)}
@@ -182,15 +182,15 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
           </div>
         </div>
 
-        {/* Footer with Controls */}
-        <div className="mt-4 bg-slate-900/60 backdrop-blur-sm rounded-2xl p-4 border border-purple-500/20">
-          <div className="flex items-center justify-between">
-            <div className="text-purple-300 text-sm">
+        {/* Footer with Controls - responsive layout */}
+        <div className="mt-2 sm:mt-4 bg-slate-900/60 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-purple-500/20">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+            <div className="text-purple-300 text-xs sm:text-sm text-center sm:text-left">
               {hasMultipleImages
                 ? "Use arrow keys or buttons to navigate • Press ESC to close"
                 : "Press ESC or click outside to close"}
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2">
               {hasMultipleImages && (
                 <>
                   <Button
@@ -198,20 +198,22 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
                     size="sm"
                     onClick={handlePrevious}
                     disabled={currentIndex === 0}
-                    className="bg-slate-800/60 border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-500/20"
+                    className="bg-slate-800/60 border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-500/20 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 touch-target"
                   >
-                    <ChevronLeft className="h-4 w-4 mr-1" />
-                    Previous
+                    <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                    <span className="hidden sm:inline">Previous</span>
+                    <span className="sm:hidden">Prev</span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={handleNext}
                     disabled={currentIndex === images.length - 1}
-                    className="bg-slate-800/60 border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-500/20"
+                    className="bg-slate-800/60 border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-500/20 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 touch-target"
                   >
-                    Next
-                    <ChevronRight className="h-4 w-4 ml-1" />
+                    <span className="hidden sm:inline">Next</span>
+                    <span className="sm:hidden">Next</span>
+                    <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                   </Button>
                 </>
               )}
@@ -219,7 +221,7 @@ export function ImageModal({ images, currentIndex, isOpen, onClose, onNavigate }
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="bg-slate-800/60 border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-500/20"
+                className="bg-slate-800/60 border-purple-500/30 text-purple-300 hover:text-white hover:bg-purple-500/20 text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2 touch-target"
               >
                 Close
               </Button>

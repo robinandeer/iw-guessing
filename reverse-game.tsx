@@ -375,30 +375,30 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
           {/* Loading Phase */}
           {gameState.phase === "loading" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-              <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 flex flex-col rounded-3xl relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-violet-500/10 to-indigo-500/10 rounded-3xl animate-pulse"></div>
-                <CardContent className="relative z-10 flex-1 flex flex-col justify-center items-center space-y-12 p-16">
+              <Card className="bg-slate-800/40 backdrop-blur-lg sm:backdrop-blur-xl border border-purple-500/20 shadow-xl sm:shadow-2xl shadow-purple-500/10 flex flex-col rounded-2xl sm:rounded-3xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-violet-500/10 to-indigo-500/10 rounded-2xl sm:rounded-3xl animate-pulse"></div>
+                <CardContent className="relative z-10 flex-1 flex flex-col justify-center items-center space-y-6 sm:space-y-8 md:space-y-12 p-8 sm:p-12 md:p-16">
                   <div className="relative">
-                    <div className="w-80 h-80 bg-slate-700/60 rounded-3xl animate-pulse border border-purple-500/20 flex items-center justify-center">
-                      <Sparkles className="h-16 w-16 text-purple-400 animate-pulse" />
+                    <div className="w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80 bg-slate-700/60 rounded-2xl sm:rounded-3xl animate-pulse border border-purple-500/20 flex items-center justify-center">
+                      <Sparkles className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-400 animate-pulse" />
                     </div>
-                    <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/30 to-violet-500/30 rounded-3xl blur-xl animate-pulse"></div>
-                    <div className="absolute -top-2 -right-2 w-4 h-4 bg-amber-400 rounded-full animate-ping shadow-lg shadow-amber-400/50"></div>
-                    <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-violet-400 rounded-full animate-ping delay-500 shadow-lg shadow-violet-400/50"></div>
+                    <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-purple-500/30 to-violet-500/30 rounded-2xl sm:rounded-3xl blur-lg sm:blur-xl animate-pulse"></div>
+                    <div className="absolute -top-1 -right-1 sm:-top-2 sm:-right-2 w-3 h-3 sm:w-4 sm:h-4 bg-amber-400 rounded-full animate-ping shadow-lg shadow-amber-400/50"></div>
+                    <div className="absolute -bottom-1 -left-1 sm:-bottom-2 sm:-left-2 w-2 h-2 sm:w-3 sm:h-3 bg-violet-400 rounded-full animate-ping delay-500 shadow-lg shadow-violet-400/50"></div>
                   </div>
 
-                  <div className="bg-slate-800/60 backdrop-blur-sm p-8 rounded-2xl border border-purple-500/20 w-full max-w-2xl shadow-lg relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
+                  <div className="bg-slate-800/60 backdrop-blur-sm p-4 sm:p-6 md:p-8 rounded-xl sm:rounded-2xl border border-purple-500/20 w-full max-w-2xl shadow-lg relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-xl sm:rounded-2xl"></div>
                     <div className="relative z-10">
-                      <div className="flex items-center gap-4 mb-6">
-                        <Sparkles className="text-purple-400 h-7 w-7 animate-pulse" />
-                        <span className="text-white font-semibold text-xl">
+                      <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                        <Sparkles className="text-purple-400 h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7 animate-pulse" />
+                        <span className="text-white font-semibold text-base sm:text-lg md:text-xl">
                           Preparing your mystery... {Math.round(processingProgress)}%
                         </span>
                       </div>
-                      <div className="w-full bg-slate-700/60 rounded-full h-3 overflow-hidden relative">
+                      <div className="w-full bg-slate-700/60 rounded-full h-2 sm:h-3 overflow-hidden relative">
                         <div
-                          className="bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 h-3 rounded-full transition-all duration-100 ease-out shadow-lg relative"
+                          className="bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 h-2 sm:h-3 rounded-full transition-all duration-100 ease-out shadow-lg relative"
                           style={{ width: `${processingProgress}%` }}
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-full animate-pulse"></div>
@@ -418,28 +418,28 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
                 <CardContent className="relative z-10 flex-1 flex flex-col space-y-8 px-12 pb-12 pt-8">
                   {/* Transformed Image Display */}
-                  <div className="flex-1 flex flex-col items-center justify-center space-y-4">
-                    <Label className="text-purple-300 font-semibold text-xl flex items-center gap-2">
-                      <Sparkles className="h-6 w-6" />
+                  <div className="flex-1 flex flex-col items-center justify-center space-y-3 sm:space-y-4">
+                    <Label className="text-purple-300 font-semibold text-lg sm:text-xl flex items-center gap-2">
+                      <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />
                       The Transformed Person
                     </Label>
-                    <div className="relative group cursor-pointer max-h-[30vh] flex items-center justify-center">
-                      <div className="absolute -inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                    <div className="relative group cursor-pointer responsive-image-container flex items-center justify-center">
+                      <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl sm:rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                       <img
                         src={gameState.transformedImage || "/placeholder.svg"}
                         alt="Transformed"
-                        className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                        className="relative max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                   </div>
 
                   {/* Guess Section */}
-                  <div className="space-y-4 bg-slate-800/40 backdrop-blur-sm p-4 sm:p-8 rounded-2xl border border-purple-500/20 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
+                  <div className="space-y-3 sm:space-y-4 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-4 md:p-8 rounded-xl sm:rounded-2xl border border-purple-500/20 relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-xl sm:rounded-2xl"></div>
                     <div className="relative z-10">
-                      <h3 className="text-white text-xl sm:text-2xl font-bold flex items-center justify-center gap-3 mb-3 sm:mb-6">
-                        <Eye className="text-purple-400 h-6 w-6" />
+                      <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6">
+                        <Eye className="text-purple-400 h-5 w-5 sm:h-6 sm:w-6" />
                         Who Is This Person?
                       </h3>
                       <Textarea
@@ -447,7 +447,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                         placeholder="Can you identify who this person is? Enter their name or describe them..."
                         value={gameState.guess}
                         onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
-                        className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
+                        className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-lg sm:rounded-xl transition-all duration-300 text-sm sm:text-base resize-none backdrop-blur-sm"
                         rows={2}
                         required={true}
                         onKeyDown={(e) => {
@@ -459,9 +459,9 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                       />
                       <Button
                         onClick={submitGuess}
-                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-4"
+                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-3 sm:py-4 text-base sm:text-lg rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-3 sm:mt-4 touch-target"
                       >
-                        <Eye className="mr-2 h-5 w-5" />
+                        <Eye className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                         Reveal the Identity
                       </Button>
                     </div>
@@ -498,30 +498,30 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
 
                     {/* Images Comparison */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 relative z-10">
                       {/* Original Image */}
                       <div className="text-center">
-                        <h3 className="text-purple-300 font-bold text-lg sm:text-xl flex items-center justify-center gap-2 mb-4">
-                          <Eye className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                          <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                           Original
                         </h3>
-                        <div className="space-y-4">
-                          <div className="relative group cursor-pointer min-h-[200px] flex items-center justify-center">
-                            <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
+                            <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                             <img
                               src={gameState.original?.url || "/placeholder.svg"}
                               alt="Original"
-                              className="relative w-full max-h-[35vh] sm:max-h-[30vh] object-contain rounded-2xl border-2 border-purple-500/30 shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                              className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
                               onClick={() => openImageModal(0)}
                             />
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-2xl">
-                              <div className="bg-white/90 text-slate-900 px-3 py-1.5 rounded-lg text-sm font-medium">
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                              <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
                                 Click to enlarge
                               </div>
                             </div>
                           </div>
                           <div className="text-center">
-                            <span className="text-white text-lg sm:text-xl font-bold bg-slate-900/60 px-4 py-3 rounded-xl border border-purple-500/30 shadow-lg backdrop-blur-sm">
+                            <span className="text-white text-base sm:text-lg md:text-xl font-bold bg-slate-900/60 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-purple-500/30 shadow-lg backdrop-blur-sm">
                               {gameState.original?.name}
                             </span>
                           </div>
@@ -530,21 +530,21 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
 
                       {/* Transformed Image */}
                       <div className="text-center">
-                        <h3 className="text-purple-300 font-bold text-lg sm:text-xl flex items-center justify-center gap-2 mb-4">
-                          <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />
+                        <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
                           Transformed
                         </h3>
-                        <div className="space-y-4">
-                          <div className="relative group cursor-pointer min-h-[200px] flex items-center justify-center">
-                            <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                        <div className="space-y-3 sm:space-y-4">
+                          <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
+                            <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                             <img
                               src={gameState.transformedImage || "/placeholder.svg"}
                               alt="Transformed"
-                              className="relative w-full max-h-[35vh] sm:max-h-[30vh] object-contain rounded-2xl border-2 border-purple-500/30 shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                              className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
                               onClick={() => openImageModal(1)}
                             />
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-2xl">
-                              <div className="bg-white/90 text-slate-900 px-3 py-1.5 rounded-lg text-sm font-medium">
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                              <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
                                 Click to enlarge
                               </div>
                             </div>

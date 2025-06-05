@@ -244,4 +244,106 @@
   .animate-delay-300 {
     animation-delay: 300ms;
   }
+
+  /* Mobile-first responsive utilities */
+
+  /* Mobile spacing utilities */
+  .mobile-compact {
+    @apply px-3 py-2;
+  }
+
+  .mobile-text {
+    @apply text-sm;
+  }
+
+  .mobile-header {
+    @apply text-lg;
+  }
+
+  /* Touch-friendly interactive elements */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Responsive image containers */
+  .responsive-image-container {
+    @apply w-full h-auto max-h-[30vh] sm:max-h-[35vh] md:max-h-[40vh];
+  }
+
+  /* Mobile-optimized modal */
+  .mobile-modal {
+    @apply p-2 sm:p-4 md:p-8;
+  }
+
+  /* Responsive grid layouts */
+  .responsive-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 md:gap-8;
+  }
+
+  /* Mobile navigation */
+  .mobile-nav {
+    @apply flex flex-col sm:flex-row gap-2 sm:gap-4;
+  }
+}
+
+/* Enhanced responsive breakpoints */
+@media (max-width: 640px) {
+  .content-container {
+    max-height: calc(100vh - 4rem);
+    padding: 0.5rem;
+  }
+
+  /* Simplified animations on mobile */
+  .animate-in {
+    animation-duration: 0.4s;
+  }
+
+  /* Reduce blur effects on mobile for performance */
+  .backdrop-blur-xl {
+    backdrop-filter: blur(8px);
+  }
+
+  /* Optimize shadows for mobile */
+  .shadow-2xl {
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+@media (max-width: 480px) {
+  .content-container {
+    max-height: calc(100vh - 3rem);
+    padding: 0.25rem;
+  }
+
+  /* Further simplify on very small screens */
+  .backdrop-blur-xl {
+    backdrop-filter: blur(4px);
+  }
+
+  /* Minimal shadows on very small screens */
+  .shadow-2xl {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-height: 500px) and (orientation: landscape) {
+  .content-container {
+    max-height: calc(100vh - 2rem);
+  }
+
+  .header-compact {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+  }
+
+  /* Reduce vertical spacing in landscape */
+  .space-y-8 > * + * {
+    margin-top: 1rem;
+  }
+
+  .space-y-12 > * + * {
+    margin-top: 1.5rem;
+  }
 }

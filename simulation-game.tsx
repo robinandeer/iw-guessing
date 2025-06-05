@@ -261,51 +261,52 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[length:50px_50px] opacity-30"></div>
       </div>
 
-      {/* Elegant Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-purple-500/20 header-compact">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
+      {/* Elegant Header - responsive */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-lg sm:backdrop-blur-xl border-b border-purple-500/20">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 md:px-6 py-1 sm:py-2 md:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 sm:gap-4">
-              <div className="relative p-2 sm:p-3 bg-gradient-to-br from-purple-600 to-violet-700 rounded-xl sm:rounded-2xl shadow-lg shadow-purple-500/30">
-                <Wand2 className="text-white h-4 w-4 sm:h-6 sm:w-6" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-4">
+              <div className="relative p-1.5 sm:p-2 md:p-3 bg-gradient-to-br from-purple-600 to-violet-700 rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg shadow-purple-500/30">
+                <Wand2 className="text-white h-3 w-3 sm:h-4 sm:w-4 md:h-6 md:w-6" />
+                <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 md:w-3 md:h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
               </div>
               <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                <h1 className="text-base sm:text-xl md:text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   Sim Spotter
                 </h1>
-                <p className="text-xs text-purple-300/80 font-medium">Uncover the mystery</p>
+                <p className="text-xs text-purple-300/80 font-medium hidden sm:block">Uncover the mystery</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 sm:gap-6">
+            <div className="flex items-center gap-1 sm:gap-2 md:gap-6">
               {onBackToMenu && (
                 <Button
                   variant="ghost"
                   size="icon"
                   onClick={onBackToMenu}
-                  className="text-purple-300 hover:text-white hover:bg-purple-500/20"
+                  className="text-purple-300 hover:text-white hover:bg-purple-500/20 h-8 w-8 sm:h-10 sm:w-10 touch-target"
                 >
-                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                 </Button>
               )}
               <SoundToggle />
-              <div className="flex items-center gap-2 sm:gap-3 bg-slate-800/60 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full border border-purple-500/20">
-                <Star className="text-amber-400 h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
-                <span className="text-white font-bold text-base sm:text-lg">{gameState.totalScore}</span>
-                <span className="text-purple-300 text-xs sm:text-sm">pts</span>
+              <div className="flex items-center gap-1 sm:gap-2 md:gap-3 bg-slate-800/60 backdrop-blur-sm px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 md:py-2.5 rounded-full border border-purple-500/20">
+                <Star className="text-amber-400 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5 animate-pulse" />
+                <span className="text-white font-bold text-sm sm:text-base md:text-lg">{gameState.totalScore}</span>
+                <span className="text-purple-300 text-xs sm:text-xs md:text-sm">pts</span>
               </div>
               <Badge
                 variant="outline"
-                className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium"
+                className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-1.5 sm:px-2 md:px-4 py-0.5 sm:py-1 md:py-2 text-xs sm:text-xs md:text-sm font-medium"
               >
-                Round {gameState.round}/{gameState.totalRounds}
+                <span className="hidden sm:inline">Round </span>
+                {gameState.round}/{gameState.totalRounds}
               </Badge>
             </div>
           </div>
-          <div className="mt-2 sm:mt-3 relative">
+          <div className="mt-1 sm:mt-2 md:mt-3 relative">
             <Progress
               value={((gameState.round - 1) / gameState.totalRounds) * 100}
-              className="w-full h-1.5 sm:h-2 bg-slate-800/60"
+              className="w-full h-1 sm:h-1.5 md:h-2 bg-slate-800/60"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-full blur-sm"></div>
           </div>
@@ -321,28 +322,27 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         </div>
       )}
 
-      {/* Main Content */}
-      <div className="pt-24 min-h-[calc(100vh-6rem)] flex items-center justify-center p-4 sm:p-6">
+      {/* Main Content - responsive padding */}
+      <div className="pt-16 sm:pt-20 md:pt-24 min-h-[calc(100vh-4rem)] sm:min-h-[calc(100vh-5rem)] md:min-h-[calc(100vh-6rem)] flex items-center justify-center p-2 sm:p-4 md:p-6">
         <div className="w-full max-w-6xl content-container">
-          {/* Upload Phase */}
+          {/* Upload Phase - mobile optimized */}
           {gameState.phase === "upload" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-              <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 flex flex-col rounded-3xl relative overflow-hidden">
-                {/* Subtle animated border */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-indigo-500/20 rounded-3xl blur-sm animate-pulse"></div>
+              <Card className="bg-slate-800/40 backdrop-blur-lg sm:backdrop-blur-xl border border-purple-500/20 shadow-xl sm:shadow-2xl shadow-purple-500/10 flex flex-col rounded-2xl sm:rounded-3xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-indigo-500/20 rounded-2xl sm:rounded-3xl blur-sm animate-pulse"></div>
                 <div className="relative z-10 h-full flex flex-col">
-                  <CardHeader className="text-center pb-8 pt-16">
-                    <div className="flex justify-center mb-6">
-                      <Moon className="h-12 w-12 text-purple-400 animate-pulse" />
+                  <CardHeader className="text-center pb-4 sm:pb-6 md:pb-8 pt-8 sm:pt-12 md:pt-16 px-4 sm:px-6">
+                    <div className="flex justify-center mb-4 sm:mb-6">
+                      <Moon className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-purple-400 animate-pulse" />
                     </div>
-                    <CardTitle className="text-white text-4xl font-bold mb-4 tracking-tight bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
+                    <CardTitle className="text-white text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4 tracking-tight bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
                       Upload Your Image
                     </CardTitle>
-                    <CardDescription className="text-purple-300 text-xl font-medium">
+                    <CardDescription className="text-purple-300 text-lg sm:text-xl font-medium">
                       Let's transform your image into something new
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-1 flex items-center justify-center px-4 sm:px-12 pb-8 sm:pb-16">
+                  <CardContent className="flex-1 flex items-center justify-center px-2 sm:px-4 md:px-12 pb-4 sm:pb-8 md:pb-16">
                     <div className="w-full max-w-4xl">
                       <UploadDropzone
                         endpoint="imageUploader"
@@ -362,29 +362,35 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                         }}
                         appearance={{
                           container: ({ isDragActive }) =>
-                            `border-2 border-dashed transition-all duration-500 rounded-3xl min-h-[30vh] sm:min-h-[40vh] relative ${
+                            `border-2 border-dashed transition-all duration-500 rounded-2xl sm:rounded-3xl min-h-[25vh] sm:min-h-[30vh] md:min-h-[40vh] relative ${
                               isDragActive
-                                ? "border-purple-400 bg-purple-900/30 border-solid shadow-2xl shadow-purple-500/30 scale-[1.02]"
-                                : "border-purple-500/40 bg-slate-800/20 hover:bg-slate-800/30 hover:border-purple-400/60 hover:shadow-xl hover:shadow-purple-500/20"
+                                ? "border-purple-400 bg-purple-900/30 border-solid shadow-xl sm:shadow-2xl shadow-purple-500/30 scale-[1.01] sm:scale-[1.02]"
+                                : "border-purple-500/40 bg-slate-800/20 hover:bg-slate-800/30 hover:border-purple-400/60 hover:shadow-lg sm:hover:shadow-xl hover:shadow-purple-500/20"
                             }`,
                           uploadIcon: ({ isDragActive }) =>
-                            `transition-all duration-500 ${isDragActive ? "text-purple-400 scale-125 animate-bounce" : "text-purple-500"}`,
+                            `transition-all duration-500 ${isDragActive ? "text-purple-400 scale-110 sm:scale-125 animate-bounce" : "text-purple-500"}`,
                           label: ({ isDragActive }) =>
-                            `font-semibold text-xl transition-all duration-500 ${
-                              isDragActive ? "text-purple-300 scale-110" : "text-white"
+                            `font-semibold text-lg sm:text-xl transition-all duration-500 ${
+                              isDragActive ? "text-purple-300 scale-105 sm:scale-110" : "text-white"
                             }`,
                           allowedContent: ({ isDragActive }) =>
-                            `text-base mt-3 transition-colors duration-500 ${
+                            `text-sm sm:text-base mt-2 sm:mt-3 transition-colors duration-500 ${
                               isDragActive ? "text-purple-400" : "text-purple-300/80"
                             }`,
                           button:
-                            "w-52 bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800 text-white font-semibold py-3.5 px-6 rounded-xl text-base transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 ut-ready:bg-gradient-to-r ut-ready:from-purple-600 ut-ready:to-violet-700 ut-uploading:cursor-not-allowed ut-uploading:from-slate-600 ut-uploading:to-slate-700",
+                            "w-40 sm:w-48 md:w-52 bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800 text-white font-semibold py-3 sm:py-3.5 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 touch-target",
                         }}
                         content={{
                           uploadIcon({ ready, isUploading }) {
-                            if (isUploading) return <Upload className="h-16 w-16 text-purple-400 animate-spin" />
-                            if (ready) return <Upload className="h-16 w-16 text-purple-500" />
-                            return <Upload className="h-16 w-16 text-purple-500 animate-pulse" />
+                            if (isUploading)
+                              return (
+                                <Upload className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-400 animate-spin" />
+                              )
+                            if (ready)
+                              return <Upload className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-500" />
+                            return (
+                              <Upload className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-500 animate-pulse" />
+                            )
                           },
                           label({ ready, isUploading }) {
                             if (isUploading) return "Processing..."
@@ -453,48 +459,48 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
                 <CardContent className="relative z-10 flex-1 flex flex-col space-y-8 px-12 pb-12 pt-8">
-                  {/* Image Comparison */}
-                  <div className="grid grid-cols-2 gap-4 sm:gap-8 flex-1">
+                  {/* Image Comparison - responsive grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 md:gap-8 flex-1">
                     <div className="text-center flex flex-col items-center justify-center space-y-2 sm:space-y-4">
-                      <Label className="text-purple-300 font-semibold text-base sm:text-lg flex items-center gap-2">
-                        <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <Label className="text-purple-300 font-semibold text-sm sm:text-base md:text-lg flex items-center gap-2">
+                        <Moon className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                         Original
                       </Label>
-                      <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
-                        <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      <div className="relative group cursor-pointer responsive-image-container flex items-center justify-center">
+                        <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                         <img
                           src={gameState.originalImage || "/placeholder.svg"}
                           alt="Original"
-                          className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          className="relative max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                           onClick={() => openImageModal(0)}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     </div>
                     <div className="text-center flex flex-col items-center justify-center space-y-2 sm:space-y-4">
-                      <Label className="text-purple-300 font-semibold text-base sm:text-lg flex items-center gap-2">
-                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
+                      <Label className="text-purple-300 font-semibold text-sm sm:text-base md:text-lg flex items-center gap-2">
+                        <Sparkles className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
                         Transformed
                       </Label>
-                      <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
-                        <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      <div className="relative group cursor-pointer responsive-image-container flex items-center justify-center">
+                        <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                         <img
                           src={gameState.transformedImage || "/placeholder.svg"}
                           alt="Transformed"
-                          className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          className="relative max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                           onClick={() => openImageModal(1)}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Guess Section */}
-                  <div className="space-y-4 bg-slate-800/40 backdrop-blur-sm p-4 sm:p-8 rounded-2xl border border-purple-500/20 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
+                  {/* Guess Section - mobile optimized */}
+                  <div className="space-y-3 sm:space-y-4 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-4 md:p-8 rounded-xl sm:rounded-2xl border border-purple-500/20 relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-xl sm:rounded-2xl"></div>
                     <div className="relative z-10">
-                      <h3 className="text-white text-xl sm:text-2xl font-bold flex items-center justify-center gap-3 mb-3 sm:mb-6">
-                        <Eye className="text-purple-400 h-6 w-6" />
+                      <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6">
+                        <Eye className="text-purple-400 h-5 w-5 sm:h-6 sm:w-6" />
                         Spot the Difference
                       </h3>
                       <Textarea
@@ -502,7 +508,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                         placeholder="What changed in the image? Take a picture-perfect guess!"
                         value={gameState.guess}
                         onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
-                        className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
+                        className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-lg sm:rounded-xl transition-all duration-300 text-sm sm:text-base resize-none backdrop-blur-sm"
                         rows={2}
                         required={true}
                         onKeyDown={(e) => {
@@ -514,9 +520,9 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       />
                       <Button
                         onClick={submitGuess}
-                        className="w-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-700 hover:via-violet-700 hover:to-indigo-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-4"
+                        className="w-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-700 hover:via-violet-700 hover:to-indigo-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-3 sm:py-4 text-base sm:text-lg rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-3 sm:mt-4 touch-target"
                       >
-                        <Wand2 className="mr-2 h-5 w-5" />
+                        <Wand2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                         Submit Your Guess
                       </Button>
                     </div>
