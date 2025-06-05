@@ -92,13 +92,6 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
     }
   }, [gameState.phase])
 
-  // Play sound when processing completes
-  useEffect(() => {
-    if (processingProgress === 100 && gameState.phase === "loading") {
-      playCompleteSound()
-    }
-  }, [processingProgress, gameState.phase])
-
   // Show celebration for high scores
   useEffect(() => {
     if (gameState.phase === "result" && gameState.score >= 70) {
