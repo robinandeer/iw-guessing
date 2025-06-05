@@ -2,37 +2,30 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Upload, Brain, Eye, RotateCcw, Star, Sparkles, Moon, Wand2, ArrowLeft } from "lucide-react"
+import { Brain, Eye, RotateCcw, Star, Sparkles, Wand2, ArrowLeft } from "lucide-react"
 import type RunwayML from "@runwayml/sdk"
-import { generateTransformPrompt, scorePromptGuess } from "./lib/gradio"
-import { UploadDropzone } from "@/lib/uploadthing"
-import { toast } from "sonner"
+import { scorePromptGuess } from "./lib/gradio"
 import { SoundToggle } from "@/components/sound-toggle"
 import { ScoreCelebration } from "@/components/score-celebration"
 import {
   soundManager,
   playClickSound,
-  playUploadSound,
   playProcessSound,
   playCompleteSound,
   playSuccessSound,
   playRevealSound,
 } from "@/lib/sounds"
 
-interface SimulationGuessingGameProps {
-  onBackToMenu?: () => void
-}
-
-interface GameState {
-  phase: "upload" | "processing" | "guessing" | "result"
+interface ReverseGameState {
+  phase: "loading" | "guessing" | "result"
   originalImage: string | null
   transformedImage: string | null
-  currentTransformation: string | null
+  transformation: string | null
   guess: string
   score: number
   round: number
@@ -40,12 +33,40 @@ interface GameState {
   totalScore: number
 }
 
-export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuessingGameProps = {}) {
-  const [gameState, setGameState] = useState<GameState>({
-    phase: "upload",
+interface ReverseGameProps {
+  onBackToMenu: () => void
+}
+
+// Sample image sets for the reverse game
+const SAMPLE_IMAGES = [
+  {
+    original: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=400&fit=crop",
+    transformation: "transform this cat into a majestic lion with a golden mane",
+  },
+  {
+    original: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=400&fit=crop",
+    transformation: "turn this house into a magical fairy tale castle with towers and flags",
+  },
+  {
+    original: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop",
+    transformation: "transform this mountain landscape into an alien planet with purple skies",
+  },
+  {
+    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e?w=400&h=400&fit=crop",
+    transformation: "turn this breakfast into a fancy five-star restaurant presentation",
+  },
+  {
+    original: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
+    transformation: "transform this sneaker into a futuristic space boot with glowing elements",
+  },
+]
+
+export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
+  const [gameState, setGameState] = useState<ReverseGameState>({
+    phase: "loading",
     originalImage: null,
     transformedImage: null,
-    currentTransformation: null,
+    transformation: null,
     guess: "",
     score: 0,
     round: 1,
@@ -61,15 +82,19 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     soundManager.preloadSounds()
   }, [])
 
+  // Start the game by generating the first image
+  useEffect(() => {
+    startNewRound()
+  }, [])
+
   // Simulate progress bar during processing
   useEffect(() => {
-    if (gameState.phase === "processing") {
+    if (gameState.phase === "loading") {
       setProcessingProgress(0)
-      const duration = 20516 // 20516ms as requested
-      const intervalTime = 100 // Update every 100ms for smooth animation
+      const duration = 15000 // Shorter duration for reverse mode
+      const intervalTime = 100
       const increment = 100 / (duration / intervalTime)
 
-      // Play processing sound
       playProcessSound()
 
       const interval = setInterval(() => {
@@ -89,7 +114,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
 
   // Play sound when processing completes
   useEffect(() => {
-    if (processingProgress === 100 && gameState.phase === "processing") {
+    if (processingProgress === 100 && gameState.phase === "loading") {
       playCompleteSound()
     }
   }, [processingProgress, gameState.phase])
@@ -101,31 +126,35 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     }
   }, [gameState.phase, gameState.score])
 
-  const handleImageUpload = async (imageUrl: string) => {
-    playUploadSound()
-
-    const transformation = await generateTransformPrompt(imageUrl)
-    // const transformation = 'transform the image to a 3D model that replaces the parts of the image that are not human';
+  const startNewRound = async () => {
+    const currentRound = gameState.round
+    const sampleImage = SAMPLE_IMAGES[(currentRound - 1) % SAMPLE_IMAGES.length]
 
     setGameState((prev) => ({
       ...prev,
-      originalImage: imageUrl,
-      currentTransformation: transformation,
-      phase: "processing",
+      phase: "loading",
+      originalImage: sampleImage.original,
+      transformation: sampleImage.transformation,
+      transformedImage: null,
+      guess: "",
     }))
 
     try {
       const response = await fetch("/api/generate", {
         method: "POST",
         body: JSON.stringify({
-          promptText: transformation,
-          referenceImage: imageUrl,
+          promptText: sampleImage.transformation,
+          referenceImage: sampleImage.original,
         }),
       })
+
       if (!response.ok) throw new Error("Failed to generate image")
+
       const data = (await response.json()) as RunwayML.TaskRetrieveResponse
       const transformedImage = data.output?.[0]
+
       if (!transformedImage) throw new Error("Failed to generate image")
+
       playCompleteSound()
       setGameState((prev) => ({
         ...prev,
@@ -134,22 +163,22 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
       }))
     } catch (error) {
       console.error("Error generating image:", error)
-      setGameState((prev) => ({
-        ...prev,
-        phase: "upload",
-        originalImage: null,
-        currentTransformation: null,
-      }))
+      // Fallback to next round if generation fails
+      nextRound()
     }
   }
 
   const submitGuess = async () => {
-    if (!gameState.currentTransformation || !gameState.guess.trim()) return
+    if (!gameState.transformation || !gameState.guess.trim()) return
 
     playClickSound()
 
+    // For reverse mode, we score based on how well they guessed the original subject
+    // We'll create a prompt that describes what the original image contained
+    const originalDescription = getOriginalDescription(gameState.round)
+
     const result = await scorePromptGuess({
-      prompt: gameState.currentTransformation,
+      prompt: originalDescription,
       guess: gameState.guess,
     })
 
@@ -159,14 +188,12 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
       return
     }
 
-    // Play reveal sound
     playRevealSound()
 
-    // If score is high (above 70), play success sound
     if (score > 70) {
       setTimeout(() => {
         playSuccessSound()
-      }, 500) // Delay to avoid sound overlap
+      }, 500)
     }
 
     setGameState((prev) => ({
@@ -177,33 +204,45 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     }))
   }
 
+  const getOriginalDescription = (round: number): string => {
+    const descriptions = [
+      "a domestic cat with typical feline features",
+      "a residential house or home building",
+      "a mountain landscape with natural terrain",
+      "a breakfast meal with typical morning food items",
+      "a sneaker or athletic shoe",
+    ]
+    return descriptions[(round - 1) % descriptions.length]
+  }
+
   const nextRound = () => {
     playClickSound()
-    setShowCelebration(false) // Hide celebration when moving to next round
+    setShowCelebration(false)
 
     if (gameState.round >= gameState.totalRounds) {
-      // Game over
+      // Game over - reset
       setGameState((prev) => ({
         ...prev,
-        phase: "upload",
+        phase: "loading",
         round: 1,
         score: 0,
         totalScore: 0,
         originalImage: null,
         transformedImage: null,
-        currentTransformation: null,
+        transformation: null,
         guess: "",
       }))
+      startNewRound()
     } else {
       setGameState((prev) => ({
         ...prev,
-        phase: "upload",
         round: prev.round + 1,
         originalImage: null,
         transformedImage: null,
-        currentTransformation: null,
+        transformation: null,
         guess: "",
       }))
+      startNewRound()
     }
   }
 
@@ -216,51 +255,45 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         onComplete={() => setShowCelebration(false)}
       />
 
-      {/* Mysterious animated background elements */}
+      {/* Background elements */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Large ambient orbs */}
         <div className="absolute -top-60 -right-60 w-96 h-96 bg-gradient-to-br from-purple-500/20 to-violet-600/20 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute -bottom-60 -left-60 w-96 h-96 bg-gradient-to-br from-indigo-500/20 to-blue-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
         <div className="absolute top-1/3 left-1/2 w-80 h-80 bg-gradient-to-br from-violet-400/15 to-purple-500/15 rounded-full blur-2xl animate-pulse delay-500"></div>
 
-        {/* Floating magical particles */}
+        {/* Floating particles */}
         <div className="absolute top-20 right-20 w-2 h-2 bg-amber-400/80 rounded-full animate-bounce shadow-lg shadow-amber-400/50"></div>
         <div className="absolute bottom-32 left-32 w-1.5 h-1.5 bg-violet-400/80 rounded-full animate-bounce delay-700 shadow-lg shadow-violet-400/50"></div>
         <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-blue-400/80 rounded-full animate-bounce delay-300 shadow-lg shadow-blue-400/50"></div>
-        <div className="absolute top-1/4 left-1/4 w-2.5 h-2.5 bg-purple-400/60 rounded-full animate-bounce delay-1200 shadow-lg shadow-purple-400/50"></div>
-        <div className="absolute bottom-1/4 right-1/3 w-1.5 h-1.5 bg-indigo-400/70 rounded-full animate-bounce delay-900 shadow-lg shadow-indigo-400/50"></div>
 
-        {/* Subtle grid pattern overlay */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(255,255,255,0.05)_1px,transparent_0)] bg-[length:50px_50px] opacity-30"></div>
       </div>
 
-      {/* Elegant Header */}
+      {/* Header */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-purple-500/20">
         <div className="max-w-6xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="relative p-3 bg-gradient-to-br from-purple-600 to-violet-700 rounded-2xl shadow-lg shadow-purple-500/30">
-                <Wand2 className="text-white h-6 w-6" />
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={onBackToMenu}
+                className="text-purple-300 hover:text-white hover:bg-purple-500/20"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div className="relative p-3 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-lg shadow-purple-500/30">
+                <Eye className="text-white h-6 w-6" />
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
-                  Sim Spotter
+                  Reverse Detective
                 </h1>
-                <p className="text-xs text-purple-300/80 font-medium">Uncover the mystery</p>
+                <p className="text-xs text-purple-300/80 font-medium">Guess the original</p>
               </div>
             </div>
             <div className="flex items-center gap-6">
-              {onBackToMenu && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onBackToMenu}
-                  className="text-purple-300 hover:text-white hover:bg-purple-500/20"
-                >
-                  <ArrowLeft className="h-5 w-5" />
-                </Button>
-              )}
               <SoundToggle />
               <div className="flex items-center gap-3 bg-slate-800/60 backdrop-blur-sm px-4 py-2.5 rounded-full border border-purple-500/20">
                 <Star className="text-amber-400 h-5 w-5 animate-pulse" />
@@ -288,101 +321,17 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
       {/* Main Content */}
       <div className="pt-28 min-h-screen flex items-center justify-center p-6">
         <div className="w-full max-w-6xl h-[calc(100vh-10rem)]">
-          {/* Upload Phase */}
-          {gameState.phase === "upload" && (
-            <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-              <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
-                {/* Subtle animated border */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-indigo-500/20 rounded-3xl blur-sm animate-pulse"></div>
-                <div className="relative z-10 h-full flex flex-col">
-                  <CardHeader className="text-center pb-8 pt-16">
-                    <div className="flex justify-center mb-6">
-                      <Moon className="h-12 w-12 text-purple-400 animate-pulse" />
-                    </div>
-                    <CardTitle className="text-white text-4xl font-bold mb-4 tracking-tight bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
-                      Upload Your Image
-                    </CardTitle>
-                    <CardDescription className="text-purple-300 text-xl font-medium">
-                      Let's transform your image into something new
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1 flex items-center justify-center px-12 pb-16">
-                    <div className="w-full max-w-4xl">
-                      <UploadDropzone
-                        endpoint="imageUploader"
-                        config={{ mode: "auto" }}
-                        onClientUploadComplete={(res) => {
-                          console.log("Upload complete:", res)
-                          if (res && res[0]) {
-                            handleImageUpload(res[0].ufsUrl)
-                          }
-                        }}
-                        onUploadError={(error: Error) => {
-                          console.error("Upload error:", error)
-                          toast.error("Upload failed", {
-                            description: error.message,
-                            duration: 5000,
-                          })
-                        }}
-                        appearance={{
-                          container: ({ isDragActive }) =>
-                            `border-2 border-dashed transition-all duration-500 rounded-3xl min-h-[400px] relative ${
-                              isDragActive
-                                ? "border-purple-400 bg-purple-900/30 border-solid shadow-2xl shadow-purple-500/30 scale-[1.02]"
-                                : "border-purple-500/40 bg-slate-800/20 hover:bg-slate-800/30 hover:border-purple-400/60 hover:shadow-xl hover:shadow-purple-500/20"
-                            }`,
-                          uploadIcon: ({ isDragActive }) =>
-                            `transition-all duration-500 ${isDragActive ? "text-purple-400 scale-125 animate-bounce" : "text-purple-500"}`,
-                          label: ({ isDragActive }) =>
-                            `font-semibold text-xl transition-all duration-500 ${
-                              isDragActive ? "text-purple-300 scale-110" : "text-white"
-                            }`,
-                          allowedContent: ({ isDragActive }) =>
-                            `text-base mt-3 transition-colors duration-500 ${
-                              isDragActive ? "text-purple-400" : "text-purple-300/80"
-                            }`,
-                          button:
-                            "w-52 bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800 text-white font-semibold py-3.5 px-6 rounded-xl text-base transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 ut-ready:bg-gradient-to-r ut-ready:from-purple-600 ut-ready:to-violet-700 ut-uploading:cursor-not-allowed ut-uploading:from-slate-600 ut-uploading:to-slate-700",
-                        }}
-                        content={{
-                          uploadIcon({ ready, isUploading }) {
-                            if (isUploading) return <Upload className="h-16 w-16 text-purple-400 animate-spin" />
-                            if (ready) return <Upload className="h-16 w-16 text-purple-500" />
-                            return <Upload className="h-16 w-16 text-purple-500 animate-pulse" />
-                          },
-                          label({ ready, isUploading }) {
-                            if (isUploading) return "Processing..."
-                            if (ready) return "Drop your image here"
-                            return "Getting ready..."
-                          },
-                          allowedContent({ isUploading }) {
-                            if (isUploading) return "Transforming your image..."
-                            return "Up to 4MB • PNG, JPG, WEBP"
-                          },
-                        }}
-                      />
-                    </div>
-                  </CardContent>
-                </div>
-              </Card>
-            </div>
-          )}
-
-          {/* Processing Phase */}
-          {gameState.phase === "processing" && (
+          {/* Loading Phase */}
+          {gameState.phase === "loading" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-violet-500/10 to-indigo-500/10 rounded-3xl animate-pulse"></div>
                 <CardContent className="relative z-10 flex-1 flex flex-col justify-center items-center space-y-12 p-16">
-                  <div className="relative group">
+                  <div className="relative">
+                    <div className="w-80 h-80 bg-slate-700/60 rounded-3xl animate-pulse border border-purple-500/20 flex items-center justify-center">
+                      <Sparkles className="h-16 w-16 text-purple-400 animate-pulse" />
+                    </div>
                     <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/30 to-violet-500/30 rounded-3xl blur-xl animate-pulse"></div>
-                    <img
-                      src={gameState.originalImage! || "/placeholder.svg"}
-                      alt="Original"
-                      className="relative w-80 h-80 object-cover rounded-3xl shadow-2xl shadow-slate-900/50 transition-transform duration-700 group-hover:scale-105 border border-purple-500/20"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-3xl animate-pulse"></div>
-                    {/* Magical sparkles */}
                     <div className="absolute -top-2 -right-2 w-4 h-4 bg-amber-400 rounded-full animate-ping shadow-lg shadow-amber-400/50"></div>
                     <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-violet-400 rounded-full animate-ping delay-500 shadow-lg shadow-violet-400/50"></div>
                   </div>
@@ -393,12 +342,12 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       <div className="flex items-center gap-4 mb-6">
                         <Sparkles className="text-purple-400 h-7 w-7 animate-pulse" />
                         <span className="text-white font-semibold text-xl">
-                          Working our magic... {Math.round(processingProgress)}%
+                          Preparing your mystery... {Math.round(processingProgress)}%
                         </span>
                       </div>
                       <div className="w-full bg-slate-700/60 rounded-full h-3 overflow-hidden relative">
                         <div
-                          className="bg-gradient-to-r from-purple-500 via-violet-500 to-indigo-500 h-3 rounded-full transition-all duration-100 ease-out shadow-lg relative"
+                          className="bg-gradient-to-r from-indigo-500 via-purple-500 to-violet-500 h-3 rounded-full transition-all duration-100 ease-out shadow-lg relative"
                           style={{ width: `${processingProgress}%` }}
                         >
                           <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-full animate-pulse"></div>
@@ -417,37 +366,20 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
                 <CardContent className="relative z-10 flex-1 flex flex-col space-y-8 px-12 pb-12 pt-8">
-                  {/* Image Comparison */}
-                  <div className="grid grid-cols-2 gap-8 flex-1">
-                    <div className="text-center flex flex-col items-center justify-center space-y-4">
-                      <Label className="text-purple-300 font-semibold text-lg flex items-center gap-2">
-                        <Moon className="h-5 w-5" />
-                        Original
-                      </Label>
-                      <div className="relative group cursor-pointer">
-                        <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                        <img
-                          src={gameState.originalImage! || "/placeholder.svg"}
-                          alt="Original"
-                          className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      </div>
-                    </div>
-                    <div className="text-center flex flex-col items-center justify-center space-y-4">
-                      <Label className="text-purple-300 font-semibold text-lg flex items-center gap-2">
-                        <Sparkles className="h-5 w-5" />
-                        Transformed
-                      </Label>
-                      <div className="relative group cursor-pointer">
-                        <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                        <img
-                          src={gameState.transformedImage || "/placeholder.svg"}
-                          alt="Transformed"
-                          className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                      </div>
+                  {/* Transformed Image Display */}
+                  <div className="flex-1 flex flex-col items-center justify-center space-y-6">
+                    <Label className="text-purple-300 font-semibold text-xl flex items-center gap-2">
+                      <Sparkles className="h-6 w-6" />
+                      The Transformed Image
+                    </Label>
+                    <div className="relative group cursor-pointer">
+                      <div className="absolute -inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                      <img
+                        src={gameState.transformedImage || "/placeholder.svg"}
+                        alt="Transformed"
+                        className="relative max-w-full max-h-[400px] object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </div>
                   </div>
 
@@ -457,11 +389,11 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                     <div className="relative z-10">
                       <h3 className="text-white text-2xl font-bold flex items-center justify-center gap-3 mb-6">
                         <Eye className="text-purple-400 h-7 w-7" />
-                        Spot the Difference
+                        What Was the Original?
                       </h3>
                       <Textarea
                         id="guess"
-                        placeholder="What changed in the image? Take a picture-perfect guess!"
+                        placeholder="What do you think the original image showed before the transformation?"
                         value={gameState.guess}
                         onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
                         className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
@@ -470,10 +402,10 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       />
                       <Button
                         onClick={submitGuess}
-                        className="w-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-700 hover:via-violet-700 hover:to-indigo-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-4"
+                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-4"
                       >
-                        <Wand2 className="mr-2 h-5 w-5" />
-                        Submit Your Guess
+                        <Eye className="mr-2 h-5 w-5" />
+                        Reveal the Truth
                       </Button>
                     </div>
                   </div>
@@ -483,7 +415,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
           )}
 
           {/* Result Phase */}
-          {gameState.phase === "result" && gameState.currentTransformation && (
+          {gameState.phase === "result" && gameState.transformation && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
@@ -493,7 +425,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                     <div className="flex items-center justify-center gap-3 mb-4">
                       <Brain className="text-purple-400 h-10 w-10" />
                       <h2 className="text-white text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
-                        Results
+                        Case Closed
                       </h2>
                     </div>
                     <div className="flex items-center justify-center gap-4 mt-4 relative">
@@ -504,30 +436,41 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                     </div>
                   </div>
 
-                  {/* Comparison Section */}
+                  {/* Reveal Section */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-800/40 backdrop-blur-sm p-8 rounded-2xl border border-purple-500/20 relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
-                    <div className="relative z-10">
-                      {/* Actual Transformation */}
-                      <div className="space-y-3">
-                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2">
-                          <Sparkles className="h-5 w-5" />
-                          Actual Transformation:
-                        </h3>
-                        <p className="text-white text-lg leading-relaxed bg-slate-900/40 p-4 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
-                          {gameState.currentTransformation}
-                        </p>
-                      </div>
+
+                    {/* Original Image */}
+                    <div className="relative z-10 text-center">
+                      <h3 className="text-purple-300 font-bold text-lg flex items-center justify-center gap-2 mb-4">
+                        <Eye className="h-5 w-5" />
+                        The Original:
+                      </h3>
+                      <img
+                        src={gameState.originalImage || "/placeholder.svg"}
+                        alt="Original"
+                        className="w-full max-h-48 object-contain rounded-xl border border-purple-500/20 shadow-lg"
+                      />
                     </div>
 
-                    <div className="relative z-10">
-                      {/* User's Guess */}
-                      <div className="space-y-3">
-                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2">
+                    {/* Comparison */}
+                    <div className="relative z-10 space-y-4">
+                      <div>
+                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
+                          <Sparkles className="h-5 w-5" />
+                          Transformation Applied:
+                        </h3>
+                        <p className="text-white text-base leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
+                          {gameState.transformation}
+                        </p>
+                      </div>
+
+                      <div>
+                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
                           <Eye className="h-5 w-5" />
                           Your Guess:
                         </h3>
-                        <p className="text-purple-100 text-lg leading-relaxed italic bg-slate-900/40 p-4 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
+                        <p className="text-purple-100 text-base leading-relaxed italic bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
                           "{gameState.guess}"
                         </p>
                       </div>
@@ -537,17 +480,17 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                   {/* Next Round Button */}
                   <Button
                     onClick={nextRound}
-                    className="w-full bg-gradient-to-r from-purple-600 via-violet-600 to-indigo-600 hover:from-purple-700 hover:via-violet-700 hover:to-indigo-700 text-white font-semibold py-5 text-xl rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 mt-6"
+                    className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 text-white font-semibold py-5 text-xl rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 mt-6"
                   >
                     {gameState.round >= gameState.totalRounds ? (
                       <>
                         <RotateCcw className="mr-2 h-6 w-6" />
-                        Play Again
+                        New Case
                       </>
                     ) : (
                       <>
                         <Wand2 className="mr-2 h-6 w-6" />
-                        Next Round
+                        Next Case
                       </>
                     )}
                   </Button>
