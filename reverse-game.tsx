@@ -109,7 +109,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
   useEffect(() => {
     if (gameState.phase === "loading") {
       setProcessingProgress(0)
-      const duration = 15000 // Shorter duration for reverse mode
+      const duration = 25000 // Shorter duration for reverse mode
       const intervalTime = 100
       const increment = 100 / (duration / intervalTime)
 
