@@ -100,13 +100,45 @@
     }
   }
 
-  /* Prevent content overflow */
+  /* Content container with seamless animations */
   .content-container {
     max-height: calc(100vh - 6rem);
     overflow-y: auto;
     scrollbar-width: thin;
+    transition: overflow 0.3s ease;
   }
 
+  /* Hide scrollbar during animations */
+  .content-container.animating {
+    overflow: hidden !important;
+    scrollbar-width: none;
+  }
+
+  .content-container.animating::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for elements with animate-in class during their animation */
+  .content-container:has(.animate-in) {
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+
+  .content-container:has(.animate-in)::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Restore scrollbar after animation completes */
+  .content-container:has(.animate-in-complete) {
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .content-container:has(.animate-in-complete)::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* Custom scrollbar styling */
   .content-container::-webkit-scrollbar {
     width: 6px;
   }
@@ -123,5 +155,93 @@
 
   .content-container::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
+  }
+
+  /* Animation states for smooth transitions */
+  @keyframes fadeInSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-in {
+    animation: fadeInSlideUp 0.7s ease-out forwards;
+  }
+
+  /* Phase transition animations */
+  .phase-enter {
+    overflow: hidden;
+    scrollbar-width: none;
+  }
+
+  .phase-enter::-webkit-scrollbar {
+    display: none;
+  }
+
+  .phase-enter-active {
+    overflow: hidden;
+    scrollbar-width: none;
+    transition: all 0.7s ease-out;
+  }
+
+  .phase-enter-active::-webkit-scrollbar {
+    display: none;
+  }
+
+  .phase-enter-done {
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+
+  .phase-enter-done::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* Prevent scrollbar flash during rapid phase changes */
+  .content-container.phase-transitioning {
+    overflow: hidden !important;
+    scrollbar-width: none !important;
+  }
+
+  .content-container.phase-transitioning::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+/* Utility classes for animation control */
+@layer utilities {
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .show-scrollbar {
+    scrollbar-width: thin;
+  }
+
+  .show-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* Animation delay utilities */
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animate-delay-300 {
+    animation-delay: 300ms;
   }
 }

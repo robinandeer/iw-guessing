@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
@@ -12,6 +12,7 @@ import type RunwayML from "@runwayml/sdk"
 import { generateTransformPrompt, scorePromptGuess } from "./lib/gradio"
 import { SoundToggle } from "@/components/sound-toggle"
 import { ScoreCelebration } from "@/components/score-celebration"
+import { ImageModal } from "@/components/image-modal"
 import {
   soundManager,
   playClickSound,
@@ -56,6 +57,13 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
 
   const [processingProgress, setProcessingProgress] = useState(0)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    currentIndex: 0,
+  })
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const contentContainerRef = useRef<HTMLDivElement>(null)
+  const previousPhaseRef = useRef<string>("")
 
   // Preload sounds when component mounts
   useEffect(() => {
@@ -66,6 +74,33 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
   useEffect(() => {
     startNewRound()
   }, [])
+
+  // Handle phase transitions and scrollbar management
+  useEffect(() => {
+    const currentPhase = gameState.phase
+    const previousPhase = previousPhaseRef.current
+
+    if (currentPhase !== previousPhase && previousPhase !== "") {
+      setIsTransitioning(true)
+
+      // Hide scrollbar during transition
+      if (contentContainerRef.current) {
+        contentContainerRef.current.classList.add("phase-transitioning")
+      }
+
+      // Restore scrollbar after animation completes
+      const timer = setTimeout(() => {
+        setIsTransitioning(false)
+        if (contentContainerRef.current) {
+          contentContainerRef.current.classList.remove("phase-transitioning")
+        }
+      }, 700) // Match animation duration
+
+      return () => clearTimeout(timer)
+    }
+
+    previousPhaseRef.current = currentPhase
+  }, [gameState.phase])
 
   // Simulate progress bar during processing
   useEffect(() => {
@@ -207,6 +242,49 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
     }
   }
 
+  const openImageModal = (imageIndex: number) => {
+    setModalState({
+      isOpen: true,
+      currentIndex: imageIndex,
+    })
+  }
+
+  const closeImageModal = () => {
+    setModalState({
+      isOpen: false,
+      currentIndex: 0,
+    })
+  }
+
+  const navigateModal = (index: number) => {
+    setModalState((prev) => ({
+      ...prev,
+      currentIndex: index,
+    }))
+  }
+
+  // Prepare modal images for result phase
+  const getModalImages = () => {
+    if (gameState.phase !== "result" || !gameState.original || !gameState.transformedImage) {
+      return []
+    }
+
+    return [
+      {
+        src: gameState.original.url,
+        alt: "Original Person",
+        title: "Original Person",
+        subtitle: gameState.original.name,
+      },
+      {
+        src: gameState.transformedImage,
+        alt: "Transformed Person",
+        title: "Transformed Version",
+        subtitle: "AI Generated Transformation",
+      },
+    ]
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden font-['Inter',system-ui,sans-serif]">
       {/* Confetti Celebration */}
@@ -214,6 +292,15 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
         score={gameState.score}
         isVisible={showCelebration}
         onComplete={() => setShowCelebration(false)}
+      />
+
+      {/* Image Modal */}
+      <ImageModal
+        images={getModalImages()}
+        currentIndex={modalState.currentIndex}
+        isOpen={modalState.isOpen}
+        onClose={closeImageModal}
+        onNavigate={navigateModal}
       />
 
       {/* Background elements */}
@@ -281,7 +368,10 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
 
       {/* Main Content */}
       <div className="pt-24 min-h-[calc(100vh-6rem)] flex items-center justify-center p-4 sm:p-6">
-        <div className="w-full max-w-6xl content-container">
+        <div
+          ref={contentContainerRef}
+          className={`w-full max-w-6xl content-container ${isTransitioning ? "phase-transitioning" : ""}`}
+        >
           {/* Loading Phase */}
           {gameState.phase === "loading" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
@@ -422,7 +512,13 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                               src={gameState.original?.url || "/placeholder.svg"}
                               alt="Original"
                               className="relative w-full max-h-[35vh] sm:max-h-[30vh] object-contain rounded-2xl border-2 border-purple-500/30 shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                              onClick={() => openImageModal(0)}
                             />
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-2xl">
+                              <div className="bg-white/90 text-slate-900 px-3 py-1.5 rounded-lg text-sm font-medium">
+                                Click to enlarge
+                              </div>
+                            </div>
                           </div>
                           <div className="text-center">
                             <span className="text-white text-lg sm:text-xl font-bold bg-slate-900/60 px-4 py-3 rounded-xl border border-purple-500/30 shadow-lg backdrop-blur-sm">
@@ -445,7 +541,13 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                               src={gameState.transformedImage || "/placeholder.svg"}
                               alt="Transformed"
                               className="relative w-full max-h-[35vh] sm:max-h-[30vh] object-contain rounded-2xl border-2 border-purple-500/30 shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                              onClick={() => openImageModal(1)}
                             />
+                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-2xl">
+                              <div className="bg-white/90 text-slate-900 px-3 py-1.5 rounded-lg text-sm font-medium">
+                                Click to enlarge
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
