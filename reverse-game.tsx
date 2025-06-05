@@ -413,7 +413,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                       <div className="text-center">
                         <h3 className="text-purple-300 font-bold text-lg sm:text-xl flex items-center justify-center gap-2 mb-4">
                           <Eye className="h-5 w-5 sm:h-6 sm:w-6" />
-                          Original Person
+                          Original
                         </h3>
                         <div className="space-y-4">
                           <div className="relative group cursor-pointer min-h-[200px] flex items-center justify-center">
@@ -436,7 +436,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                       <div className="text-center">
                         <h3 className="text-purple-300 font-bold text-lg sm:text-xl flex items-center justify-center gap-2 mb-4">
                           <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />
-                          Transformed Version
+                          Transformed
                         </h3>
                         <div className="space-y-4">
                           <div className="relative group cursor-pointer min-h-[200px] flex items-center justify-center">
