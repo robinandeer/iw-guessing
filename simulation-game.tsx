@@ -49,7 +49,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     guess: "",
     score: 0,
     round: 1,
-    totalRounds: 5,
+    totalRounds: 3,
     totalScore: 0,
   })
 
