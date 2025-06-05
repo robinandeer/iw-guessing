@@ -258,7 +258,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                 <h1 className="text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   Reverse Detective
                 </h1>
-                <p className="text-xs text-purple-300/80 font-medium">Guess the original</p>
+                <p className="text-xs text-purple-300/80 font-medium">Identify the person</p>
               </div>
             </div>
             <div className="flex items-center gap-6">
@@ -338,12 +338,12 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                   <div className="flex-1 flex flex-col items-center justify-center space-y-6">
                     <Label className="text-purple-300 font-semibold text-xl flex items-center gap-2">
                       <Sparkles className="h-6 w-6" />
-                      The Transformed Image
+                      The Transformed Person
                     </Label>
                     <div className="relative group cursor-pointer">
                       <div className="absolute -inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                       <img
-                        src={gameState.transformedImage}
+                        src={gameState.transformedImage || "/placeholder.svg"}
                         alt="Transformed"
                         className="relative max-w-full max-h-[400px] object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                       />
@@ -357,11 +357,11 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     <div className="relative z-10">
                       <h3 className="text-white text-2xl font-bold flex items-center justify-center gap-3 mb-6">
                         <Eye className="text-purple-400 h-7 w-7" />
-                        What Was the Original?
+                        Who Is This Person?
                       </h3>
                       <Textarea
                         id="guess"
-                        placeholder="What do you think the original image showed before the transformation?"
+                        placeholder="Can you identify who this person is? Enter their name or describe them..."
                         value={gameState.guess}
                         onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
                         className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
@@ -379,7 +379,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                         className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-4 text-lg rounded-xl transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-4"
                       >
                         <Eye className="mr-2 h-5 w-5" />
-                        Reveal the Truth
+                        Reveal the Identity
                       </Button>
                     </div>
                   </div>
@@ -399,7 +399,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     <div className="flex items-center justify-center gap-3 mb-4">
                       <Brain className="text-purple-400 h-10 w-10" />
                       <h2 className="text-white text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent">
-                        Case Closed
+                        Identity Revealed
                       </h2>
                     </div>
                     <div className="flex items-center justify-center gap-4 mt-4 relative">
@@ -418,13 +418,20 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     <div className="relative z-10 text-center">
                       <h3 className="text-purple-300 font-bold text-lg flex items-center justify-center gap-2 mb-4">
                         <Eye className="h-5 w-5" />
-                        The Original:
+                        The Original Person:
                       </h3>
-                      <img
-                        src={gameState.original?.url || "/placeholder.svg"}
-                        alt="Original"
-                        className="w-full max-h-48 object-contain rounded-xl border border-purple-500/20 shadow-lg"
-                      />
+                      <div className="space-y-3">
+                        <img
+                          src={gameState.original?.url || "/placeholder.svg"}
+                          alt="Original"
+                          className="w-full max-h-48 object-contain rounded-xl border border-purple-500/20 shadow-lg"
+                        />
+                        <div className="text-center">
+                          <span className="text-white text-xl font-bold bg-slate-900/40 px-4 py-2 rounded-lg border border-purple-500/20">
+                            {gameState.original?.name}
+                          </span>
+                        </div>
+                      </div>
                     </div>
 
                     {/* Comparison */}
@@ -459,7 +466,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     {gameState.round >= gameState.totalRounds ? (
                       <>
                         <RotateCcw className="mr-2 h-6 w-6" />
-                        New Case
+                        New Investigation
                       </>
                     ) : (
                       <>

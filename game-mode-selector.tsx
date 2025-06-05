@@ -74,27 +74,14 @@ export default function GameModeSelector({ onModeSelect }: GameModeSelectorProps
                   </div>
                 </div>
                 <CardTitle className="text-white text-2xl font-bold mb-3">Transform & Guess</CardTitle>
-                <CardDescription className="text-purple-300 text-lg">
-                  Upload your image and guess the transformation
+                <CardDescription className="text-purple-300 text-lg leading-relaxed">
+                  Upload your own image and watch as AI transforms it in mysterious ways. Then put your detective skills
+                  to the test by guessing exactly what changed.
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative z-10 px-8 pb-12">
-                <div className="space-y-4 text-purple-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span>Upload your own image</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span>AI transforms it mysteriously</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                    <span>Guess what changed</span>
-                  </div>
-                </div>
                 <Button
-                  className="w-full mt-8 bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800 text-white font-semibold py-3 rounded-xl transition-all duration-300"
+                  className="w-full mt-6 bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800 text-white font-semibold py-3 rounded-xl transition-all duration-300"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleModeSelect("transform")
@@ -121,27 +108,14 @@ export default function GameModeSelector({ onModeSelect }: GameModeSelectorProps
                   </div>
                 </div>
                 <CardTitle className="text-white text-2xl font-bold mb-3">Reverse Detective</CardTitle>
-                <CardDescription className="text-purple-300 text-lg">
-                  See the result and guess the original
+                <CardDescription className="text-purple-300 text-lg leading-relaxed">
+                  See a transformed person and work backwards to identify who they originally were. Can you recognize
+                  faces through AI's creative disguises?
                 </CardDescription>
               </CardHeader>
               <CardContent className="relative z-10 px-8 pb-12">
-                <div className="space-y-4 text-purple-200">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full"></div>
-                    <span>We provide a transformed image</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full"></div>
-                    <span>Guess the original subject</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-indigo-400 rounded-full"></div>
-                    <span>Test your detective skills</span>
-                  </div>
-                </div>
                 <Button
-                  className="w-full mt-8 bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 rounded-xl transition-all duration-300"
+                  className="w-full mt-6 bg-gradient-to-r from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-semibold py-3 rounded-xl transition-all duration-300"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleModeSelect("reverse")
