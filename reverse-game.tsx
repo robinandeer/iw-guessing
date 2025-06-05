@@ -156,12 +156,12 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
         }),
       })
 
-      if (!response.ok) throw new Error("Failed to generate image")
+      if (!response.ok) throw new Error("Runway failed to generate image")
 
       const data = (await response.json()) as RunwayML.TaskRetrieveResponse
       const transformedImage = data.output?.[0]
 
-      if (!transformedImage) throw new Error("Failed to generate image")
+      if (!transformedImage) throw new Error("No output from Runway")
 
       playCompleteSound()
       setGameState((prev) => ({
