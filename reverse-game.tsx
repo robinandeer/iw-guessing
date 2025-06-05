@@ -22,6 +22,8 @@ import {
   playRevealSound,
 } from "@/lib/sounds"
 import { getRandomRunwayer } from "./lib/runwayers"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 interface ReverseGameState {
   phase: "loading" | "guessing" | "result"
@@ -64,6 +66,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const contentContainerRef = useRef<HTMLDivElement>(null)
   const previousPhaseRef = useRef<string>("")
+  const isMobile = useIsMobile()
 
   // Preload sounds when component mounts
   useEffect(() => {
@@ -499,134 +502,266 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
           {/* Result Phase */}
           {gameState.phase === "result" && gameState.transformation && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-              <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
+              <Card
+                className={`bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 flex flex-col rounded-3xl relative overflow-hidden ${isMobile ? 'h-[calc(100vh-4rem)]' : 'h-full'}`}
+              >
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
                 {/* CardContent - Reduced padding for mobile */}
-                <CardContent className="relative z-10 flex-1 flex flex-col justify-center p-4 sm:p-8 md:p-12 gap-4 sm:gap-6 md:gap-8">
-                  {/* Score Display - Reduced size for mobile */}
-                  <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
-                    <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
-                      <Brain className="text-purple-400 h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10" />
-                      <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent text-center">
-                        Identity Revealed
-                      </h2>
-                    </div>
-                    <div className="flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-4 relative">
-                      <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
-                      <Star className="relative text-amber-400 h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 animate-pulse" />
-                      <span className="relative text-white text-4xl sm:text-5xl md:text-6xl font-bold">
-                        {gameState.score}
-                      </span>
-                      <span className="relative text-purple-300 text-2xl sm:text-2xl md:text-3xl font-medium">
-                        /100
-                      </span>
-                    </div>
-                  </div>
+                {isMobile ? (
+                  <ScrollArea className="h-full">
+                    <CardContent className="relative z-10 flex-1 flex flex-col justify-center p-4 sm:p-8 md:p-12 gap-4 sm:gap-6 md:gap-8 min-h-[60vh]">
+                      {/* Score Display - Reduced size for mobile */}
+                      <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
+                        <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
+                          <Brain className="text-purple-400 h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10" />
+                          <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent text-center">
+                            Identity Revealed
+                          </h2>
+                        </div>
+                        <div className="flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-4 relative">
+                          <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
+                          <Star className="relative text-amber-400 h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 animate-pulse" />
+                          <span className="relative text-white text-4xl sm:text-5xl md:text-6xl font-bold">
+                            {gameState.score}
+                          </span>
+                          <span className="relative text-purple-300 text-2xl sm:text-2xl md:text-3xl font-medium">
+                            /100
+                          </span>
+                        </div>
+                      </div>
 
-                  {/* Reveal Section - Reduced padding for mobile */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 md:gap-8 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-6 md:p-8 rounded-2xl border border-purple-500/20 relative">
-                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
+                      {/* Reveal Section - Reduced padding for mobile */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 md:gap-8 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-6 md:p-8 rounded-2xl border border-purple-500/20 relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
 
-                    {/* Images Comparison */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 relative z-10">
-                      {/* Original Image */}
-                      <div className="text-center">
-                        <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
-                          <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                          Original
-                        </h3>
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
-                            <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                            <img
-                              src={gameState.original?.url || "/placeholder.svg"}
-                              alt="Original"
-                              className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
-                              onClick={() => openImageModal(0)}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
-                              <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
-                                Click to enlarge
-                              </div>
-                            </div>
-                          </div>
+                        {/* Images Comparison */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 relative z-10">
+                          {/* Original Image */}
                           <div className="text-center">
-                            <span className="text-white text-base sm:text-lg md:text-xl font-bold bg-slate-900/60 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-purple-500/30 shadow-lg backdrop-blur-sm">
-                              {gameState.original?.name}
-                            </span>
+                            <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                              <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                              Original
+                            </h3>
+                            <div className="space-y-3 sm:space-y-4">
+                              <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
+                                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                                <img
+                                  src={gameState.original?.url || "/placeholder.svg"}
+                                  alt="Original"
+                                  className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                                  onClick={() => openImageModal(0)}
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                  <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
+                                    Click to enlarge
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="text-center">
+                                <span className="text-white text-base sm:text-lg md:text-xl font-bold bg-slate-900/60 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-purple-500/30 shadow-lg backdrop-blur-sm">
+                                  {gameState.original?.name}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Transformed Image */}
+                          <div className="text-center">
+                            <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                              <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                              Transformed
+                            </h3>
+                            <div className="space-y-3 sm:space-y-4">
+                              <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
+                                <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                                <img
+                                  src={gameState.transformedImage || "/placeholder.svg"}
+                                  alt="Transformed"
+                                  className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                                  onClick={() => openImageModal(1)}
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                  <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
+                                    Click to enlarge
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Comparison */}
+                        <div className="relative z-10 space-y-4">
+                          <div>
+                            <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
+                              <Sparkles className="h-5 w-5" />
+                              Transformation Applied:
+                            </h3>
+                            <p className="text-white text-base leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
+                              {gameState.transformation}
+                            </p>
+                          </div>
+
+                          <div>
+                            <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
+                              <Eye className="h-5 w-5" />
+                              Your Guess:
+                            </h3>
+                            <p className="text-purple-100 text-base leading-relaxed italic bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
+                              "{gameState.guess}"
+                            </p>
                           </div>
                         </div>
                       </div>
 
-                      {/* Transformed Image */}
-                      <div className="text-center">
-                        <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
-                          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                          Transformed
-                        </h3>
-                        <div className="space-y-3 sm:space-y-4">
-                          <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
-                            <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                            <img
-                              src={gameState.transformedImage || "/placeholder.svg"}
-                              alt="Transformed"
-                              className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
-                              onClick={() => openImageModal(1)}
-                            />
-                            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
-                              <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
-                                Click to enlarge
+                      {/* Next Round Button - Improved mobile accessibility */}
+                      <div className="mt-4 sm:mt-6 pb-2 sm:pb-0">
+                        <Button
+                          onClick={nextRound}
+                          className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 text-white font-semibold py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 touch-target"
+                        >
+                          {gameState.round >= gameState.totalRounds ? (
+                            <>
+                              <RotateCcw className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                              New Investigation
+                            </>
+                          ) : (
+                            <>
+                              <Wand2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                              Next Case
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </ScrollArea>
+                ) : (
+                  <CardContent className="relative z-10 flex-1 flex flex-col justify-center p-4 sm:p-8 md:p-12 gap-4 sm:gap-6 md:gap-8">
+                    {/* Score Display - Reduced size for mobile */}
+                    <div className="flex flex-col items-center justify-center mb-4 sm:mb-6">
+                      <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
+                        <Brain className="text-purple-400 h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10" />
+                        <h2 className="text-white text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-white via-purple-200 to-violet-300 bg-clip-text text-transparent text-center">
+                          Identity Revealed
+                        </h2>
+                      </div>
+                      <div className="flex items-center justify-center gap-2 sm:gap-4 mt-2 sm:mt-4 relative">
+                        <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-amber-500/20 to-yellow-500/20 rounded-full blur-xl animate-pulse"></div>
+                        <Star className="relative text-amber-400 h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 animate-pulse" />
+                        <span className="relative text-white text-4xl sm:text-5xl md:text-6xl font-bold">
+                          {gameState.score}
+                        </span>
+                        <span className="relative text-purple-300 text-2xl sm:text-2xl md:text-3xl font-medium">
+                          /100
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Reveal Section - Reduced padding for mobile */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 md:gap-8 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-6 md:p-8 rounded-2xl border border-purple-500/20 relative">
+                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
+
+                      {/* Images Comparison */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 relative z-10">
+                        {/* Original Image */}
+                        <div className="text-center">
+                          <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                            <Eye className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            Original
+                          </h3>
+                          <div className="space-y-3 sm:space-y-4">
+                            <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
+                              <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                              <img
+                                src={gameState.original?.url || "/placeholder.svg"}
+                                alt="Original"
+                                className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                                onClick={() => openImageModal(0)}
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
+                                  Click to enlarge
+                                </div>
+                              </div>
+                            </div>
+                            <div className="text-center">
+                              <span className="text-white text-base sm:text-lg md:text-xl font-bold bg-slate-900/60 px-3 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border border-purple-500/30 shadow-lg backdrop-blur-sm">
+                                {gameState.original?.name}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Transformed Image */}
+                        <div className="text-center">
+                          <h3 className="text-purple-300 font-bold text-base sm:text-lg md:text-xl flex items-center justify-center gap-2 mb-3 sm:mb-4">
+                            <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            Transformed
+                          </h3>
+                          <div className="space-y-3 sm:space-y-4">
+                            <div className="relative group cursor-pointer min-h-[150px] sm:min-h-[200px] flex items-center justify-center">
+                              <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                              <img
+                                src={gameState.transformedImage || "/placeholder.svg"}
+                                alt="Transformed"
+                                className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
+                                onClick={() => openImageModal(1)}
+                              />
+                              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
+                                  Click to enlarge
+                                </div>
                               </div>
                             </div>
                           </div>
                         </div>
                       </div>
+
+                      {/* Comparison */}
+                      <div className="relative z-10 space-y-4">
+                        <div>
+                          <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
+                            <Sparkles className="h-5 w-5" />
+                            Transformation Applied:
+                          </h3>
+                          <p className="text-white text-base leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
+                            {gameState.transformation}
+                          </p>
+                        </div>
+
+                        <div>
+                          <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
+                            <Eye className="h-5 w-5" />
+                            Your Guess:
+                          </h3>
+                          <p className="text-purple-100 text-base leading-relaxed italic bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
+                            "{gameState.guess}"
+                          </p>
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Comparison */}
-                    <div className="relative z-10 space-y-4">
-                      <div>
-                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
-                          <Sparkles className="h-5 w-5" />
-                          Transformation Applied:
-                        </h3>
-                        <p className="text-white text-base leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
-                          {gameState.transformation}
-                        </p>
-                      </div>
-
-                      <div>
-                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2 mb-2">
-                          <Eye className="h-5 w-5" />
-                          Your Guess:
-                        </h3>
-                        <p className="text-purple-100 text-base leading-relaxed italic bg-slate-900/40 p-3 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
-                          "{gameState.guess}"
-                        </p>
-                      </div>
+                    {/* Next Round Button - Improved mobile accessibility */}
+                    <div className="mt-4 sm:mt-6 pb-2 sm:pb-0">
+                      <Button
+                        onClick={nextRound}
+                        className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 text-white font-semibold py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 touch-target"
+                      >
+                        {gameState.round >= gameState.totalRounds ? (
+                          <>
+                            <RotateCcw className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            New Investigation
+                          </>
+                        ) : (
+                          <>
+                            <Wand2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            Next Case
+                          </>
+                        )}
+                      </Button>
                     </div>
-                  </div>
-
-                  {/* Next Round Button - Improved mobile accessibility */}
-                  <div className="mt-4 sm:mt-6 pb-2 sm:pb-0">
-                    <Button
-                      onClick={nextRound}
-                      className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 text-white font-semibold py-3 sm:py-4 md:py-5 text-base sm:text-lg md:text-xl rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 touch-target"
-                    >
-                      {gameState.round >= gameState.totalRounds ? (
-                        <>
-                          <RotateCcw className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                          New Investigation
-                        </>
-                      ) : (
-                        <>
-                          <Wand2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
-                          Next Case
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                </CardContent>
+                  </CardContent>
+                )}
               </Card>
             </div>
           )}
