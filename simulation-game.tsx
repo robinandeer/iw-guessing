@@ -230,22 +230,22 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
       </div>
 
       {/* Elegant Header */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-purple-500/20">
-        <div className="max-w-6xl mx-auto px-6 py-4">
+      <div className="fixed top-0 left-0 right-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-purple-500/20 header-compact">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 sm:py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="relative p-3 bg-gradient-to-br from-purple-600 to-violet-700 rounded-2xl shadow-lg shadow-purple-500/30">
-                <Wand2 className="text-white h-6 w-6" />
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="relative p-2 sm:p-3 bg-gradient-to-br from-purple-600 to-violet-700 rounded-xl sm:rounded-2xl shadow-lg shadow-purple-500/30">
+                <Wand2 className="text-white h-4 w-4 sm:h-6 sm:w-6" />
+                <div className="absolute -top-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-amber-400 rounded-full animate-pulse shadow-lg shadow-amber-400/50"></div>
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight bg-gradient-to-r from-white to-purple-200 bg-clip-text text-transparent">
                   Sim Spotter
                 </h1>
                 <p className="text-xs text-purple-300/80 font-medium">Uncover the mystery</p>
               </div>
             </div>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 sm:gap-6">
               {onBackToMenu && (
                 <Button
                   variant="ghost"
@@ -253,27 +253,27 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                   onClick={onBackToMenu}
                   className="text-purple-300 hover:text-white hover:bg-purple-500/20"
                 >
-                  <ArrowLeft className="h-5 w-5" />
+                  <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               )}
               <SoundToggle />
-              <div className="flex items-center gap-3 bg-slate-800/60 backdrop-blur-sm px-4 py-2.5 rounded-full border border-purple-500/20">
-                <Star className="text-amber-400 h-5 w-5 animate-pulse" />
-                <span className="text-white font-bold text-lg">{gameState.totalScore}</span>
-                <span className="text-purple-300 text-sm">pts</span>
+              <div className="flex items-center gap-2 sm:gap-3 bg-slate-800/60 backdrop-blur-sm px-3 sm:px-4 py-1.5 sm:py-2.5 rounded-full border border-purple-500/20">
+                <Star className="text-amber-400 h-4 w-4 sm:h-5 sm:w-5 animate-pulse" />
+                <span className="text-white font-bold text-base sm:text-lg">{gameState.totalScore}</span>
+                <span className="text-purple-300 text-xs sm:text-sm">pts</span>
               </div>
               <Badge
                 variant="outline"
-                className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-4 py-2 text-sm font-medium"
+                className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-2 sm:px-4 py-1 sm:py-2 text-xs sm:text-sm font-medium"
               >
                 Round {gameState.round}/{gameState.totalRounds}
               </Badge>
             </div>
           </div>
-          <div className="mt-3 relative">
+          <div className="mt-2 sm:mt-3 relative">
             <Progress
               value={((gameState.round - 1) / gameState.totalRounds) * 100}
-              className="w-full h-2 bg-slate-800/60"
+              className="w-full h-1.5 sm:h-2 bg-slate-800/60"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-full blur-sm"></div>
           </div>
@@ -281,8 +281,8 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
       </div>
 
       {/* Main Content */}
-      <div className="pt-28 min-h-screen flex items-center justify-center p-6">
-        <div className="w-full max-w-6xl h-[calc(100vh-10rem)]">
+      <div className="pt-24 min-h-[calc(100vh-6rem)] flex items-center justify-center p-4 sm:p-6">
+        <div className="w-full max-w-6xl content-container">
           {/* Upload Phase */}
           {gameState.phase === "upload" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
@@ -295,7 +295,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                   </div>
                 </div>
               )}
-              <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
+              <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 flex flex-col rounded-3xl relative overflow-hidden">
                 {/* Subtle animated border */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-indigo-500/20 rounded-3xl blur-sm animate-pulse"></div>
                 <div className="relative z-10 h-full flex flex-col">
@@ -310,7 +310,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       Let's transform your image into something new
                     </CardDescription>
                   </CardHeader>
-                  <CardContent className="flex-1 flex items-center justify-center px-12 pb-16">
+                  <CardContent className="flex-1 flex items-center justify-center px-4 sm:px-12 pb-8 sm:pb-16">
                     <div className="w-full max-w-4xl">
                       <UploadDropzone
                         endpoint="imageUploader"
@@ -330,7 +330,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                         }}
                         appearance={{
                           container: ({ isDragActive }) =>
-                            `border-2 border-dashed transition-all duration-500 rounded-3xl min-h-[400px] relative ${
+                            `border-2 border-dashed transition-all duration-500 rounded-3xl min-h-[30vh] sm:min-h-[40vh] relative ${
                               isDragActive
                                 ? "border-purple-400 bg-purple-900/30 border-solid shadow-2xl shadow-purple-500/30 scale-[1.02]"
                                 : "border-purple-500/40 bg-slate-800/20 hover:bg-slate-800/30 hover:border-purple-400/60 hover:shadow-xl hover:shadow-purple-500/20"
@@ -383,7 +383,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                     <img
                       src={gameState.originalImage! || "/placeholder.svg"}
                       alt="Original"
-                      className="relative w-80 h-80 object-cover rounded-3xl shadow-2xl shadow-slate-900/50 transition-transform duration-700 group-hover:scale-105 border border-purple-500/20"
+                      className="relative w-64 h-64 sm:w-80 sm:h-80 object-cover rounded-3xl shadow-2xl shadow-slate-900/50 transition-transform duration-700 group-hover:scale-105 border border-purple-500/20"
                     />
                     <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-violet-500/20 rounded-3xl animate-pulse"></div>
                     {/* Magical sparkles */}
@@ -422,13 +422,13 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
                 <CardContent className="relative z-10 flex-1 flex flex-col space-y-8 px-12 pb-12 pt-8">
                   {/* Image Comparison */}
-                  <div className="grid grid-cols-2 gap-8 flex-1">
-                    <div className="text-center flex flex-col items-center justify-center space-y-4">
-                      <Label className="text-purple-300 font-semibold text-lg flex items-center gap-2">
-                        <Moon className="h-5 w-5" />
+                  <div className="grid grid-cols-2 gap-4 sm:gap-8 flex-1">
+                    <div className="text-center flex flex-col items-center justify-center space-y-2 sm:space-y-4">
+                      <Label className="text-purple-300 font-semibold text-base sm:text-lg flex items-center gap-2">
+                        <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
                         Original
                       </Label>
-                      <div className="relative group cursor-pointer">
+                      <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
                         <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                         <img
                           src={gameState.originalImage! || "/placeholder.svg"}
@@ -438,12 +438,12 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                         <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     </div>
-                    <div className="text-center flex flex-col items-center justify-center space-y-4">
-                      <Label className="text-purple-300 font-semibold text-lg flex items-center gap-2">
-                        <Sparkles className="h-5 w-5" />
+                    <div className="text-center flex flex-col items-center justify-center space-y-2 sm:space-y-4">
+                      <Label className="text-purple-300 font-semibold text-base sm:text-lg flex items-center gap-2">
+                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
                         Transformed
                       </Label>
-                      <div className="relative group cursor-pointer">
+                      <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
                         <div className="absolute -inset-2 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                         <img
                           src={gameState.transformedImage || "/placeholder.svg"}
@@ -456,11 +456,11 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                   </div>
 
                   {/* Guess Section */}
-                  <div className="space-y-6 bg-slate-800/40 backdrop-blur-sm p-8 rounded-2xl border border-purple-500/20 relative">
+                  <div className="space-y-4 bg-slate-800/40 backdrop-blur-sm p-4 sm:p-8 rounded-2xl border border-purple-500/20 relative">
                     <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
                     <div className="relative z-10">
-                      <h3 className="text-white text-2xl font-bold flex items-center justify-center gap-3 mb-6">
-                        <Eye className="text-purple-400 h-7 w-7" />
+                      <h3 className="text-white text-xl sm:text-2xl font-bold flex items-center justify-center gap-3 mb-3 sm:mb-6">
+                        <Eye className="text-purple-400 h-6 w-6" />
                         Spot the Difference
                       </h3>
                       <Textarea
@@ -469,7 +469,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                         value={gameState.guess}
                         onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
                         className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
-                        rows={3}
+                        rows={2}
                         required={true}
                         onKeyDown={(e) => {
                           if (e.key === "Enter" && !e.shiftKey) {
