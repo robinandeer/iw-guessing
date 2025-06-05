@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Brain, Eye, RotateCcw, Star, Sparkles, Wand2, ArrowLeft } from "lucide-react"
 import type RunwayML from "@runwayml/sdk"
-import { scorePromptGuess } from "./lib/gradio"
+import { generateTransformPrompt, scorePromptGuess } from "./lib/gradio"
 import { SoundToggle } from "@/components/sound-toggle"
 import { ScoreCelebration } from "@/components/score-celebration"
 import {
@@ -20,10 +20,14 @@ import {
   playSuccessSound,
   playRevealSound,
 } from "@/lib/sounds"
+import { getRandomRunwayer } from "./lib/runwayers"
 
 interface ReverseGameState {
   phase: "loading" | "guessing" | "result"
-  originalImage: string | null
+  original: {
+    name: string
+    url: string
+  } | null
   transformedImage: string | null
   transformation: string | null
   guess: string
@@ -37,34 +41,10 @@ interface ReverseGameProps {
   onBackToMenu: () => void
 }
 
-// Sample image sets for the reverse game
-const SAMPLE_IMAGES = [
-  {
-    original: "https://images.unsplash.com/photo-1574158622682-e40e69881006?w=400&h=400&fit=crop",
-    transformation: "transform this cat into a majestic lion with a golden mane",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee?w=400&h=400&fit=crop",
-    transformation: "turn this house into a magical fairy tale castle with towers and flags",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=400&fit=crop",
-    transformation: "transform this mountain landscape into an alien planet with purple skies",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1551963831-b3b1ca40c98e?w=400&h=400&fit=crop",
-    transformation: "turn this breakfast into a fancy five-star restaurant presentation",
-  },
-  {
-    original: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=400&fit=crop",
-    transformation: "transform this sneaker into a futuristic space boot with glowing elements",
-  },
-]
-
 export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
   const [gameState, setGameState] = useState<ReverseGameState>({
     phase: "loading",
-    originalImage: null,
+    original: null,
     transformedImage: null,
     transformation: null,
     guess: "",
@@ -127,24 +107,24 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
   }, [gameState.phase, gameState.score])
 
   const startNewRound = async () => {
-    const currentRound = gameState.round
-    const sampleImage = SAMPLE_IMAGES[(currentRound - 1) % SAMPLE_IMAGES.length]
+    const runwayer = getRandomRunwayer()
 
     setGameState((prev) => ({
       ...prev,
       phase: "loading",
-      originalImage: sampleImage.original,
-      transformation: sampleImage.transformation,
+      original: runwayer,
       transformedImage: null,
       guess: "",
     }))
 
     try {
+      const promptText = await generateTransformPrompt(runwayer.url)
+
       const response = await fetch("/api/generate", {
         method: "POST",
         body: JSON.stringify({
-          promptText: sampleImage.transformation,
-          referenceImage: sampleImage.original,
+          promptText,
+          referenceImage: runwayer.url,
         }),
       })
 
@@ -159,6 +139,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
       setGameState((prev) => ({
         ...prev,
         transformedImage,
+        transformation: promptText,
         phase: "guessing",
       }))
     } catch (error) {
@@ -169,16 +150,14 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
   }
 
   const submitGuess = async () => {
-    if (!gameState.transformation || !gameState.guess.trim()) return
+    if (!gameState.original || !gameState.guess.trim()) return
 
     playClickSound()
 
-    // For reverse mode, we score based on how well they guessed the original subject
-    // We'll create a prompt that describes what the original image contained
-    const originalDescription = getOriginalDescription(gameState.round)
+    const originalName = `The person's name is ${gameState.original.name}.`
 
     const result = await scorePromptGuess({
-      prompt: originalDescription,
+      prompt: originalName,
       guess: gameState.guess,
     })
 
@@ -204,17 +183,6 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
     }))
   }
 
-  const getOriginalDescription = (round: number): string => {
-    const descriptions = [
-      "a domestic cat with typical feline features",
-      "a residential house or home building",
-      "a mountain landscape with natural terrain",
-      "a breakfast meal with typical morning food items",
-      "a sneaker or athletic shoe",
-    ]
-    return descriptions[(round - 1) % descriptions.length]
-  }
-
   const nextRound = () => {
     playClickSound()
     setShowCelebration(false)
@@ -227,7 +195,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
         round: 1,
         score: 0,
         totalScore: 0,
-        originalImage: null,
+        original: null,
         transformedImage: null,
         transformation: null,
         guess: "",
@@ -237,7 +205,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
       setGameState((prev) => ({
         ...prev,
         round: prev.round + 1,
-        originalImage: null,
+        original: null,
         transformedImage: null,
         transformation: null,
         guess: "",
@@ -375,7 +343,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                     <div className="relative group cursor-pointer">
                       <div className="absolute -inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                       <img
-                        src={gameState.transformedImage || "/placeholder.svg"}
+                        src={gameState.transformedImage}
                         alt="Transformed"
                         className="relative max-w-full max-h-[400px] object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                       />
@@ -399,6 +367,12 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                         className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
                         rows={3}
                         required={true}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault()
+                            submitGuess()
+                          }
+                        }}
                       />
                       <Button
                         onClick={submitGuess}
@@ -447,7 +421,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                         The Original:
                       </h3>
                       <img
-                        src={gameState.originalImage || "/placeholder.svg"}
+                        src={gameState.original?.url || "/placeholder.svg"}
                         alt="Original"
                         className="w-full max-h-48 object-contain rounded-xl border border-purple-500/20 shadow-lg"
                       />

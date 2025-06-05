@@ -55,6 +55,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
 
   const [processingProgress, setProcessingProgress] = useState(0)
   const [showCelebration, setShowCelebration] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   // Preload sounds when component mounts
   useEffect(() => {
@@ -87,13 +88,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     }
   }, [gameState.phase])
 
-  // Play sound when processing completes
-  useEffect(() => {
-    if (processingProgress === 100 && gameState.phase === "processing") {
-      playCompleteSound()
-    }
-  }, [processingProgress, gameState.phase])
-
   // Show celebration for high scores
   useEffect(() => {
     if (gameState.phase === "result" && gameState.score >= 70) {
@@ -102,19 +96,18 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
   }, [gameState.phase, gameState.score])
 
   const handleImageUpload = async (imageUrl: string) => {
+    setIsUploading(true)
     playUploadSound()
 
-    const transformation = await generateTransformPrompt(imageUrl)
-    // const transformation = 'transform the image to a 3D model that replaces the parts of the image that are not human';
-
-    setGameState((prev) => ({
-      ...prev,
-      originalImage: imageUrl,
-      currentTransformation: transformation,
-      phase: "processing",
-    }))
-
     try {
+      const transformation = await generateTransformPrompt(imageUrl)
+      setGameState((prev) => ({
+        ...prev,
+        originalImage: imageUrl,
+        currentTransformation: transformation,
+        phase: "processing",
+      }))
+
       const response = await fetch("/api/generate", {
         method: "POST",
         body: JSON.stringify({
@@ -140,6 +133,8 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         originalImage: null,
         currentTransformation: null,
       }))
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -291,6 +286,15 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
           {/* Upload Phase */}
           {gameState.phase === "upload" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
+              {/* Loading overlay for upload */}
+              {isUploading && (
+                <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-xl">
+                  <div className="flex flex-col items-center gap-4">
+                    <Upload className="h-16 w-16 text-purple-400 animate-spin" />
+                    <span className="text-white text-xl font-semibold">Uploading image...</span>
+                  </div>
+                </div>
+              )}
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                 {/* Subtle animated border */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-indigo-500/20 rounded-3xl blur-sm animate-pulse"></div>
@@ -467,6 +471,12 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                         className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-xl transition-all duration-300 text-base resize-none backdrop-blur-sm"
                         rows={3}
                         required={true}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" && !e.shiftKey) {
+                            e.preventDefault()
+                            submitGuess()
+                          }
+                        }}
                       />
                       <Button
                         onClick={submitGuess}
