@@ -23,6 +23,7 @@ import {
   playSuccessSound,
   playRevealSound,
 } from "@/lib/sounds"
+import { ImageModal } from "@/components/image-modal"
 
 interface SimulationGuessingGameProps {
   onBackToMenu?: () => void
@@ -56,6 +57,10 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
   const [processingProgress, setProcessingProgress] = useState(0)
   const [showCelebration, setShowCelebration] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    currentIndex: 0,
+  })
 
   // Preload sounds when component mounts
   useEffect(() => {
@@ -202,6 +207,33 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     }
   }
 
+  function openImageModal(index: number) {
+    setModalState({ isOpen: true, currentIndex: index })
+  }
+  function closeImageModal() {
+    setModalState({ isOpen: false, currentIndex: 0 })
+  }
+  function navigateModal(index: number) {
+    setModalState((prev) => ({ ...prev, currentIndex: index }))
+  }
+
+  function getModalImages() {
+    const images = []
+    if (gameState.originalImage)
+      images.push({
+        src: gameState.originalImage,
+        alt: "Original Image",
+        title: "Original Image",
+      })
+    if (gameState.transformedImage)
+      images.push({
+        src: gameState.transformedImage,
+        alt: "Transformed Image",
+        title: "Transformed Image",
+      })
+    return images
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-indigo-900 relative overflow-hidden font-['Inter',system-ui,sans-serif]">
       {/* Confetti Celebration */}
@@ -280,21 +312,21 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         </div>
       </div>
 
+      {gameState.phase === "upload" && isUploading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-xl">
+          <div className="flex flex-col items-center gap-4">
+            <Upload className="h-16 w-16 text-purple-400 animate-spin" />
+            <span className="text-white text-xl font-semibold">Uploading image...</span>
+          </div>
+        </div>
+      )}
+
       {/* Main Content */}
       <div className="pt-24 min-h-[calc(100vh-6rem)] flex items-center justify-center p-4 sm:p-6">
         <div className="w-full max-w-6xl content-container">
           {/* Upload Phase */}
           {gameState.phase === "upload" && (
             <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-              {/* Loading overlay for upload */}
-              {isUploading && (
-                <div className="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-xl">
-                  <div className="flex flex-col items-center gap-4">
-                    <Upload className="h-16 w-16 text-purple-400 animate-spin" />
-                    <span className="text-white text-xl font-semibold">Uploading image...</span>
-                  </div>
-                </div>
-              )}
               <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 flex flex-col rounded-3xl relative overflow-hidden">
                 {/* Subtle animated border */}
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 via-violet-500/20 to-indigo-500/20 rounded-3xl blur-sm animate-pulse"></div>
@@ -431,9 +463,10 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
                         <div className="absolute -inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
                         <img
-                          src={gameState.originalImage! || "/placeholder.svg"}
+                          src={gameState.originalImage || "/placeholder.svg"}
                           alt="Original"
                           className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          onClick={() => openImageModal(0)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
@@ -449,6 +482,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                           src={gameState.transformedImage || "/placeholder.svg"}
                           alt="Transformed"
                           className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          onClick={() => openImageModal(1)}
                         />
                         <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
@@ -530,16 +564,26 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       </div>
                     </div>
 
-                    <div className="relative z-10">
-                      {/* User's Guess */}
-                      <div className="space-y-3">
-                        <h3 className="text-purple-300 font-bold text-lg flex items-center gap-2">
-                          <Eye className="h-5 w-5" />
-                          Your Guess:
-                        </h3>
-                        <p className="text-purple-100 text-lg leading-relaxed italic bg-slate-900/40 p-4 rounded-xl border border-purple-500/20 shadow-sm backdrop-blur-sm">
-                          "{gameState.guess}"
-                        </p>
+                    <div className="relative z-10 flex gap-6">
+                      {/* Original Image */}
+                      <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
+                        <img
+                          src={gameState.originalImage || "/placeholder.svg"}
+                          alt="Original"
+                          className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          onClick={() => openImageModal(0)}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                      </div>
+                      {/* Transformed Image */}
+                      <div className="relative group cursor-pointer max-h-[25vh] flex items-center justify-center">
+                        <img
+                          src={gameState.transformedImage || "/placeholder.svg"}
+                          alt="Transformed"
+                          className="relative max-w-full max-h-full object-contain rounded-2xl shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          onClick={() => openImageModal(1)}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                       </div>
                     </div>
                   </div>
@@ -567,6 +611,15 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
           )}
         </div>
       </div>
+
+      {/* Image Modal */}
+      <ImageModal
+        images={getModalImages()}
+        currentIndex={modalState.currentIndex}
+        isOpen={modalState.isOpen}
+        onClose={closeImageModal}
+        onNavigate={navigateModal}
+      />
     </div>
   )
 }
