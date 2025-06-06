@@ -54,8 +54,7 @@ export function GameErrorDisplay({
             {showBackToMenu && onBackToMenu && (
               <Button
                 onClick={onBackToMenu}
-                variant="outline"
-                className="flex-1 border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:text-white font-semibold py-3 text-base rounded-xl transition-all duration-300"
+                className="flex-1 bg-slate-700/60 border border-slate-400/30 text-white hover:bg-slate-800/80 hover:text-white font-semibold py-3 text-base rounded-xl transition-colors duration-300 shadow-md shadow-slate-900/20 backdrop-blur-sm"
               >
                 <Home className="mr-2 h-4 w-4" />
                 Main Menu
