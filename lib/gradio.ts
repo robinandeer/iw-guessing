@@ -1,4 +1,4 @@
-const GRADIO_API_URL_BASE = "https://11824e588701.ngrok.app"
+const GRADIO_API_URL_BASE = "https://3990a2a75db9.ngrok.app"
 const GRADIO_API_URL = `${GRADIO_API_URL_BASE}/gradio_api/call/process_inputs`
 const GRADIO_API_URL_EVENT = `${GRADIO_API_URL_BASE}/gradio_api/call/process_inputs`
 
@@ -30,11 +30,13 @@ export class TimeoutError extends Error {
 
 // Helper function to determine if an error is retryable
 export function isRetryableError(error: Error): boolean {
-  return (
-    error instanceof NetworkError ||
-    error instanceof TimeoutError ||
-    (error instanceof GradioAPIError && error.statusCode && error.statusCode >= 500)
-  )
+  if (error instanceof NetworkError || error instanceof TimeoutError) return true
+
+  if (error instanceof GradioAPIError) {
+    return error.statusCode !== undefined && error.statusCode >= 500
+  }
+  
+  return false
 }
 
 // Helper function to get user-friendly error message
