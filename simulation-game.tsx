@@ -459,13 +459,11 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                               "w-40 sm:w-48 md:w-52 bg-gradient-to-r from-purple-600 to-violet-700 hover:from-purple-700 hover:to-violet-800 text-white font-semibold py-3 sm:py-3.5 px-4 sm:px-6 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-purple-500/30 touch-target",
                           }}
                           content={{
-                            uploadIcon({ ready, isUploading }) {
-                              if (isUploading)
-                                return (
-                                  <Upload className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-400 animate-spin" />
-                                )
-                              if (ready)
+                            uploadIcon({ ready }) {
+                              if (ready) {
                                 return <Upload className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-500" />
+                              }
+
                               return (
                                 <Upload className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-purple-500 animate-pulse" />
                               )
