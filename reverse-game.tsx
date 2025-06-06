@@ -421,8 +421,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                   variant="outline"
                   className="text-purple-200 border-purple-400/40 bg-purple-900/40 backdrop-blur-sm px-1.5 sm:px-2 md:px-4 py-0.5 sm:py-1 md:py-1.5 text-xs sm:text-xs md:text-sm font-medium"
                 >
-                  <span className="hidden sm:inline">Round </span>
-                  {gameState.round}/{gameState.totalRounds}
+                  Round {gameState.round}/{gameState.totalRounds}
                 </Badge>
               </div>
             </div>
