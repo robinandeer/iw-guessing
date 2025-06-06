@@ -607,7 +607,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                                     className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
                                     onClick={() => openImageModal(0)}
                                   />
-                                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl pointer-events-none">
                                     <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
                                       Click to enlarge
                                     </div>
@@ -636,7 +636,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                                     className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
                                     onClick={() => openImageModal(1)}
                                   />
-                                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl pointer-events-none">
                                     <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
                                       Click to enlarge
                                     </div>
@@ -734,7 +734,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                                   className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
                                   onClick={() => openImageModal(0)}
                                 />
-                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl pointer-events-none">
                                   <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
                                     Click to enlarge
                                   </div>
@@ -763,7 +763,7 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
                                   className="relative w-full max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] object-contain rounded-xl sm:rounded-2xl border-2 border-purple-500/30 shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl group-hover:border-purple-400/50"
                                   onClick={() => openImageModal(1)}
                                 />
-                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl">
+                                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20 rounded-xl sm:rounded-2xl pointer-events-none">
                                   <div className="bg-white/90 text-slate-900 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-xs sm:text-sm font-medium">
                                     Click to enlarge
                                   </div>

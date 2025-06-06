@@ -311,6 +311,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         alt: "Your Guess Transformation",
         title: "Your Guess Transformation",
       })
+    console.log('images', images)
     return images
   }
 
@@ -625,14 +626,14 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                           Original
                         </Label>
                         <div className="relative group cursor-pointer responsive-image-container flex items-center justify-center">
-                          <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                          <div className="absolute -inset-1 sm:-inset-2 bg-gradient-to-r from-purple-500/20 to-violet-500/20 rounded-xl sm:rounded-2xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500 point"></div>
                           <img
                             src={gameState.originalImage || "/placeholder.svg"}
                             alt="Original"
                             className="relative max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                             onClick={() => openImageModal(0)}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-purple-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                         </div>
                       </div>
                       <div className="text-center flex flex-col items-center justify-center space-y-2 sm:space-y-4">
@@ -648,7 +649,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                             className="relative max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
                             onClick={() => openImageModal(1)}
                           />
-                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
                         </div>
                       </div>
                     </div>
