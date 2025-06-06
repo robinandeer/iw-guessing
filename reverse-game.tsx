@@ -498,59 +498,65 @@ export default function ReverseGame({ onBackToMenu }: ReverseGameProps) {
             {/* Guessing Phase */}
             {gameState.phase === "guessing" && gameState.transformedImage && (
               <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-                <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
+                <Card className={`bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 flex flex-col rounded-3xl relative overflow-hidden ${
+                  isMobile ? "h-[calc(100vh-4rem)]" : "h-full"
+                }`}>
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
-                  <CardContent className="relative z-10 flex-1 flex flex-col space-y-8 px-12 pb-12 pt-8">
-                    {/* Transformed Image Display */}
-                    <div className="flex-1 flex flex-col items-center justify-center space-y-3 sm:space-y-4">
-                      <Label className="text-purple-300 font-semibold text-lg sm:text-xl flex items-center gap-2">
-                        <Sparkles className="h-5 w-5 sm:h-6 sm:w-6" />
-                        The Transformed Person
-                      </Label>
-                      <div className="relative group cursor-pointer responsive-image-container flex items-center justify-center">
-                        <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl sm:rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                        <img
-                          src={gameState.transformedImage || "/placeholder.svg"}
-                          alt="Transformed"
-                          className="relative max-w-full max-h-full object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Use ScrollArea for better handling of shorter screens */}
+                  <ScrollArea className="h-full">
+                    <CardContent className="relative z-10 flex flex-col space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8 p-4 sm:p-6 md:p-8 lg:p-12 min-h-[60vh]">
+                      {/* Transformed Image Display - Better height constraints */}
+                      <div className="flex flex-col items-center justify-center space-y-2 sm:space-y-3">
+                        <Label className="text-purple-300 font-semibold text-base sm:text-lg md:text-xl flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                          The Transformed Person
+                        </Label>
+                        <div className="relative group cursor-pointer w-full flex items-center justify-center">
+                          <div className="absolute -inset-2 sm:-inset-4 bg-gradient-to-r from-violet-500/20 to-indigo-500/20 rounded-2xl sm:rounded-3xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                          <img
+                            src={gameState.transformedImage || "/placeholder.svg"}
+                            alt="Transformed"
+                            className="relative w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl max-h-[25vh] sm:max-h-[30vh] md:max-h-[35vh] lg:max-h-[40vh] object-contain rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 group-hover:shadow-2xl border border-purple-500/20"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-violet-900/10 rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Guess Section */}
-                    <div className="space-y-3 sm:space-y-4 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-4 md:p-8 rounded-xl sm:rounded-2xl border border-purple-500/20 relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-xl sm:rounded-2xl"></div>
-                      <div className="relative z-10">
-                        <h3 className="text-white text-lg sm:text-xl md:text-2xl font-bold flex items-center justify-center gap-2 sm:gap-3 mb-3 sm:mb-4 md:mb-6">
-                          <Eye className="text-purple-400 h-5 w-5 sm:h-6 sm:w-6" />
-                          Who Is This Person?
-                        </h3>
-                        <Textarea
-                          id="guess"
-                          placeholder="Can you identify who this person is? Enter their name or describe them..."
-                          value={gameState.guess}
-                          onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
-                          className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-lg sm:rounded-xl transition-all duration-300 text-sm sm:text-base resize-none backdrop-blur-sm"
-                          rows={2}
-                          required={true}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                              e.preventDefault()
-                              submitGuess()
-                            }
-                          }}
-                        />
-                        <Button
-                          onClick={submitGuess}
-                          className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-3 sm:py-4 text-base sm:text-lg rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-3 sm:mt-4 touch-target"
-                        >
-                          <Eye className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                          Reveal the Identity
-                        </Button>
+                      {/* Guess Section - More compact */}
+                      <div className="space-y-2 sm:space-y-3 md:space-y-4 bg-slate-800/40 backdrop-blur-sm p-3 sm:p-4 md:p-6 lg:p-8 rounded-xl sm:rounded-2xl border border-purple-500/20 relative">
+                        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-xl sm:rounded-2xl"></div>
+                        <div className="relative z-10">
+                          <h3 className="text-white text-base sm:text-lg md:text-xl lg:text-2xl font-bold flex items-center justify-center gap-2 mb-2 sm:mb-3 md:mb-4">
+                            <Eye className="text-purple-400 h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6" />
+                            Who Is This Person?
+                          </h3>
+                          <Textarea
+                            id="guess"
+                            placeholder="Can you identify who this person is? Enter their name or describe them..."
+                            value={gameState.guess}
+                            onChange={(e) => setGameState((prev) => ({ ...prev, guess: e.target.value }))}
+                            className="bg-slate-900/60 border-2 border-purple-500/30 text-white placeholder:text-purple-300/60 focus:border-purple-400 focus:ring-purple-400/20 rounded-lg sm:rounded-xl transition-all duration-300 text-sm sm:text-base resize-none backdrop-blur-sm"
+                            rows={2}
+                            required={true}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault()
+                                submitGuess()
+                              }
+                            }}
+                          />
+                          <Button
+                            onClick={submitGuess}
+                            className="w-full bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-600 hover:from-indigo-700 hover:via-purple-700 hover:to-violet-700 disabled:from-slate-600 disabled:to-slate-700 text-white font-semibold py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg rounded-lg sm:rounded-xl transition-all duration-300 hover:scale-[1.01] sm:hover:scale-[1.02] hover:shadow-lg hover:shadow-purple-500/30 disabled:scale-100 disabled:shadow-none mt-2 sm:mt-3 md:mt-4 touch-target"
+                          >
+                            <Eye className="mr-2 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
+                            Reveal the Identity
+                          </Button>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
+                    </CardContent>
+                  </ScrollArea>
                 </Card>
               </div>
             )}
