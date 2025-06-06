@@ -32,10 +32,9 @@ interface SimulationGuessingGameProps {
 }
 
 interface GameState {
-  phase: "upload" | "processing" | "guessing" | "processing-guess" | "result" | "error"
+  phase: "upload" | "processing" | "guessing" | "result" | "error"
   originalImage: string | null
   transformedImage: string | null
-  userTransformedImage: string | null
   currentTransformation: string | null
   guess: string
   score: number
@@ -54,7 +53,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
     phase: "upload",
     originalImage: null,
     transformedImage: null,
-    userTransformedImage: null,
     currentTransformation: null,
     guess: "",
     score: 0,
@@ -78,7 +76,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
 
   // Simulate progress bar during processing
   useEffect(() => {
-    if (gameState.phase === "processing" || gameState.phase === "processing-guess") {
+    if (gameState.phase === "processing") {
       setProcessingProgress(0)
       const duration = 20516 // 20516ms as requested
       const intervalTime = 100 // Update every 100ms for smooth animation
@@ -202,28 +200,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
       if (score === null) {
         throw new Error("Failed to score guess - invalid response")
       }
-
-      // Set the score and move to processing-guess phase
-      setGameState((prev) => ({
-        ...prev,
-        phase: "processing-guess",
-        score: score,
-        totalScore: prev.totalScore + score,
-      }))
-
-      // Now transform the original image using the user's guess
-      const response = await fetch("/api/generate", {
-        method: "POST",
-        body: JSON.stringify({
-          promptText: gameState.guess,
-          referenceImage: gameState.originalImage,
-        }),
-      })
-      
-      if (!response.ok) throw new Error(`Runway API failed with status ${response.status}`)
-      const data = (await response.json()) as RunwayML.TaskRetrieveResponse
-      const userTransformedImage = data.output?.[0]
-      if (!userTransformedImage) throw new Error("No output from Runway API for user guess")
       
       playCompleteSound()
 
@@ -237,10 +213,12 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         }, 500) // Delay to avoid sound overlap
       }
 
+      // Go directly to result phase with score and user's transformed image
       setGameState((prev) => ({
         ...prev,
         phase: "result",
-        userTransformedImage,
+        score: score,
+        totalScore: prev.totalScore + score,
       }))
     } catch (error) {
       handleError(error as Error, "guess scoring or transformation")
@@ -261,7 +239,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         totalScore: 0,
         originalImage: null,
         transformedImage: null,
-        userTransformedImage: null,
         currentTransformation: null,
         guess: "",
         error: undefined,
@@ -273,7 +250,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         round: prev.round + 1,
         originalImage: null,
         transformedImage: null,
-        userTransformedImage: null,
         currentTransformation: null,
         guess: "",
         error: undefined,
@@ -305,13 +281,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
         alt: "Target Transformation",
         title: "Target Transformation",
       })
-    if (gameState.userTransformedImage)
-      images.push({
-        src: gameState.userTransformedImage,
-        alt: "Your Guess Transformation",
-        title: "Your Guess Transformation",
-      })
-    console.log('images', images)
     return images
   }
 
@@ -563,54 +532,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
               </div>
             )}
 
-            {/* Processing User Guess Phase */}
-            {gameState.phase === "processing-guess" && (
-              <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
-                <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-500/10 via-indigo-500/10 to-purple-500/10 rounded-3xl animate-pulse"></div>
-                  <CardContent className="relative z-10 flex-1 flex flex-col justify-center items-center space-y-12 p-16">
-                    <div className="relative group">
-                      <div className="absolute -inset-4 bg-gradient-to-r from-violet-500/30 to-indigo-500/30 rounded-3xl blur-xl animate-pulse"></div>
-                      <img
-                        src={gameState.originalImage! || "/placeholder.svg"}
-                        alt="Original"
-                        className="relative w-64 h-64 sm:w-80 sm:h-80 object-cover rounded-3xl shadow-2xl shadow-slate-900/50 transition-transform duration-700 group-hover:scale-105 border border-violet-500/20"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-indigo-500/20 rounded-3xl animate-pulse"></div>
-                      {/* Magical sparkles */}
-                      <div className="absolute -top-2 -right-2 w-4 h-4 bg-cyan-400 rounded-full animate-ping shadow-lg shadow-cyan-400/50"></div>
-                      <div className="absolute -bottom-2 -left-2 w-3 h-3 bg-indigo-400 rounded-full animate-ping delay-500 shadow-lg shadow-indigo-400/50"></div>
-                    </div>
 
-                    <div className="bg-slate-800/60 backdrop-blur-sm p-8 rounded-2xl border border-violet-500/20 w-full max-w-2xl shadow-lg relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-violet-500/5 to-indigo-500/5 rounded-2xl"></div>
-                      <div className="relative z-10">
-                        <div className="flex items-center gap-4 mb-6">
-                          <Wand2 className="text-violet-400 h-7 w-7 animate-pulse" />
-                          <span className="text-white font-semibold text-xl">
-                            Testing your guess... {Math.round(processingProgress)}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-slate-700/60 rounded-full h-3 overflow-hidden relative">
-                          <div
-                            className="bg-gradient-to-r from-violet-500 via-indigo-500 to-purple-500 h-3 rounded-full transition-all duration-100 ease-out shadow-lg relative"
-                            style={{ width: `${processingProgress}%` }}
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent rounded-full animate-pulse"></div>
-                          </div>
-                        </div>
-                        {gameState.guess && (
-                          <div className="mt-4 p-4 bg-slate-700/40 rounded-xl border border-violet-500/20">
-                            <p className="text-violet-300 text-sm font-medium mb-1">Your Guess:</p>
-                            <p className="text-white text-sm">{gameState.guess}</p>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            )}
 
             {/* Guessing Phase */}
             {gameState.phase === "guessing" && gameState.transformedImage && (
@@ -692,7 +614,7 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
             )}
 
             {/* Result Phase */}
-            {gameState.phase === "result" && gameState.currentTransformation && gameState.userTransformedImage && (
+            {gameState.phase === "result" && gameState.currentTransformation && (
               <div className="animate-in fade-in-0 slide-in-from-bottom-6 duration-700 h-full">
                 <Card className="bg-slate-800/40 backdrop-blur-xl border border-purple-500/20 shadow-2xl shadow-purple-500/10 h-full flex flex-col rounded-3xl relative overflow-hidden">
                   <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-violet-500/5 to-indigo-500/5 rounded-3xl"></div>
@@ -717,8 +639,8 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                       </div>
                     </div>
 
-                    {/* Three-way Image Comparison */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 bg-slate-800/40 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-purple-500/20 relative flex-1">
+                    {/* Two-way Image Comparison */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 bg-slate-800/40 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-purple-500/20 relative flex-1">
                       <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-violet-500/5 rounded-2xl"></div>
                       
                       {/* Original Image */}
@@ -751,23 +673,6 @@ export default function SimulationGuessingGame({ onBackToMenu }: SimulationGuess
                             alt="Target Transformation"
                             className="relative w-full max-h-48 sm:max-h-56 md:max-h-64 object-contain rounded-xl shadow-lg shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 border border-green-500/20"
                             onClick={() => openImageModal(1)}
-                          />
-                        </div>
-                      </div>
-
-                      {/* User's Guess Transformation */}
-                      <div className="relative z-10 text-center space-y-3">
-                        <h3 className="text-blue-300 font-bold text-sm sm:text-base flex items-center justify-center gap-2">
-                          <Wand2 className="h-4 w-4" />
-                          Your Guess
-                        </h3>
-                        <div className="relative group cursor-pointer">
-                          <div className="absolute -inset-1 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl blur-lg opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                          <img
-                            src={gameState.userTransformedImage || "/placeholder.svg"}
-                            alt="Your Guess Transformation"
-                            className="relative w-full max-h-48 sm:max-h-56 md:max-h-64 object-contain rounded-xl shadow-lg shadow-slate-900/50 transition-all duration-500 group-hover:scale-105 border border-blue-500/20"
-                            onClick={() => openImageModal(2)}
                           />
                         </div>
                       </div>
